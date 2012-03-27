@@ -1,0 +1,36 @@
+jQuery-html5-canvas-panorama-plugin
+
+March 27 2012 from Kei Kim(nicekei@gmail.com)
+
+
+
+Q. Why do you re-create already existing jQuery panorama plugin?
+
+Yeah, it's another jQuery panorama plugin!
+
+But the implementation details are quite different. 
+
+As the repo name implies, it internally changes image into html5 canvas.
+Users can drag and view 360 degree panorama through the canvas.
+
+
+
+Q. Why canvas? Aren't image with css with js sufficient?
+
+Probably correct. I chose html5 canvas for two reasons:
+
+1. If we draw things on canvas, we can do pretty cool stuffs with it like applying cool effects on it.
+
+2. Drawing things on html5 canvas is fast enough on today's mobile device.
+
+
+
+Q. So what's the jQuery plugin name? jQuery-html5-canvas-panorama?
+
+No, that's too long. Because it's jQuery plugin, it should start with "j".
+
+But I prefer "dd", which means "dance dance". 
+Strange, but this is named after one amateur photograph's blog I love. 
+I want to support this one's photo's on web. 
+I think I'll create a series of tools and plugins to support this one.
+
