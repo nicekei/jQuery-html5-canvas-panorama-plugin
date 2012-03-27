@@ -15,7 +15,7 @@ Users can drag and view 360 degree panorama through the canvas.
 
 
 
-Q. Why canvas? Aren't image with css with js sufficient?
+Q. Why canvas? Aren't image with css and javascript sufficient?
 
 Probably correct. I chose html5 canvas for two reasons:
 
