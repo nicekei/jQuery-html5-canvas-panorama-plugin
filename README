@@ -27,9 +27,11 @@ Probably correct. I chose html5 canvas for two reasons:
 
 Q. So what's the jQuery plugin name? jQuery-html5-canvas-panorama?
 
+
+
 No, that's too long. Because it's jQuery plugin, it should start with "j".
 
-But I prefer "dd", which means "dance dance". 
+But I prefer "dd", which means "dance dance". So the name is "ddpanorama"
 Strange, but this is named after one amateur photograph's blog I love. 
 I want to support this one's photo's on web. 
 I think I'll create a series of tools and plugins to support this one.
