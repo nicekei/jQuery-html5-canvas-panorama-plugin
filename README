@@ -23,16 +23,17 @@ Probably correct. I chose html5 canvas for two reasons:
 
 2. Drawing things on html5 canvas is fast enough on today's mobile device.
 
+(I want this plugin get spread :D So I added the last but not least important notes)
 
+*. It scrolls smoothly(maybe smoother than others)
+*. It scrolls like iOS scrollview
 
 Q. So what's the jQuery plugin name? jQuery-html5-canvas-panorama?
-
 
 
 No, that's too long. Because it's jQuery plugin, it should start with "j".
 
 But I prefer "dd", which means "dance dance". So the name is "ddpanorama"
-Strange, but this is named after one amateur photograph's blog I love. 
-I want to support this one's photo's on web. 
-I think I'll create a series of tools and plugins to support this one.
-
+Strange enough, but this is named after an amateur photograph's blog I love
+I want to support that photos being displayed on the web
+I'll create a series of tools and plugins to support Let's dance! :D
