@@ -202,7 +202,7 @@
                           o.redraw();
                       });
     $(canvas).bind("contextmenu", function(event){
-                 e.preventDefault();
+                 event.preventDefault();
                  return false;                 
                  });                
     $(canvas).bind("touchstart", function(event) {
