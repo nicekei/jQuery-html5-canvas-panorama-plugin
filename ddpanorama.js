@@ -1,5 +1,5 @@
 /*
- * ddpanorama - jQuery plugin version 1.10
+ * ddpanorama - jQuery plugin version 1.11
  * Copyright (c) Tiny Studio (http://tinystudio.dyndns.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
