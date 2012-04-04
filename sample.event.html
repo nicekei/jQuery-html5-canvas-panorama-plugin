@@ -2,17 +2,18 @@
 <html>
 <body>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
-    <script type="text/javascript" src="https://raw.github.com/cowboy/jquery-outside-events/master/jquery.ba-outside-events.min.js"> </script>
-    <script type="text/javascript" src="./ddpanorama.js"> </script>
+    <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
+    <script type="text/javascript" src="./ddpanorama.min.js"> </script>
     
     <img class="aligncenter size-full wp-image-458" title="IMG_5639" src="PanoSarek.jpg" alt="" />
     <script>
         //see 
         jQuery(function(){jQuery("img").ddpanorama({ratio:9/16}).bind("ddpanorama_redraw", function(event){
-                                                                      //do something here to handle redrawevent
+                                                                      //do something here to handle redraw event
                                                                       //event.speed contains a speed (px/sec)
                                                                       //event.canvas contains a canvas element
-                                                                      //(I'll add later more compelling examples)
+                                                                      //event.loaded contains a boolean flag which indicates whether the image is loaded or not 
+                                                                      //(I'll add later more compelling examples later)
                                                                       });});
     </script>
 </body>

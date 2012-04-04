@@ -1,8 +1,19 @@
 jQuery-html5-canvas-panorama-plugin
 
-March 27 2012 from Kei Kim(nicekei@gmail.com)
+April 4 2012 from Kei Kim(nicekei@gmail.com)
+
+<Version history>
+
+1.10 : Fixed event handling bug(mis typo?)
+       Support resized canvas drawing when height is specified
+       Fills the black color when canvas image is not loaded yet
+       Added .loaded parameter to event, users can draw something until the panorama image is fully loaded
+
+1.01 : Added event handling support
+1.00 : Started ddpanorama
 
 
+<Q & A>
 
 Q. Why do you re-create already existing jQuery panorama plugin?
 
@@ -28,8 +39,9 @@ Probably correct. I chose html5 canvas for two reasons:
 *. It scrolls smoothly(maybe smoother than others)
 *. It scrolls like iOS scrollview
 
-Q. So what's the jQuery plugin name? jQuery-html5-canvas-panorama?
 
+
+Q. So what's the jQuery plugin name? jQuery-html5-canvas-panorama?
 
 No, that's too long. Because it's jQuery plugin, it should start with "j".
 
@@ -37,3 +49,18 @@ But I prefer "dd", which means "dance dance". So the name is "ddpanorama"
 Strange enough, but this is named after an amateur photograph's blog I love
 I want to support that photos being displayed on the web
 I'll create a series of tools and plugins to support Let's dance! :D
+
+
+
+Q. What is jquery.ba-outside-events? Is it part of the plugin?
+
+No, absolutely not. It's a prerequisite jQuery plugin which handles outside events ex) outside mouse release event
+
+It's a simple and works good. The author's page is here(http://benalman.com/projects/jquery-outside-events-plugin/)
+
+Maybe later it can be included in jQuery itself! Check the new version if you have a time.
+
+I included "jquery.ba-outside-events.min.js" file in the repository which works currently with ddpanorama.
+
+
+
