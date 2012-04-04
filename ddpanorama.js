@@ -99,25 +99,21 @@
 						}
 					}
 					o.setScrollX = function(scrollX) {
-						var width = $(this.img).get()[0].naturalWidth
-								/ this.draw_scale;
-						while (scrollX >= width)
-							scrollX -= width;
-						while (scrollX < -width)
-							scrollX += width;
+//						var width = $(this.img).get()[0].naturalWidth / this.draw_scale;
+//						while (scrollX >= width)
+//							scrollX -= width;
+//						while (scrollX < -width)
+//							scrollX += width;
 
 						$(this.canvas).prop("scrollX", scrollX);
 						return scrollX;
 					}
 					o.scrollTo = function(pageX) {
 
-						var mousedownScrollX = $(this.canvas).prop(
-								"mousedownScrollX");
-						if (mousedownScrollX == null)
-							return;
+						var mousedownScrollX = $(this.canvas).prop("mousedownScrollX");
+						if (mousedownScrollX == null) return;
 						var width = $(img).get()[0].naturalWidth;
-						this.setScrollX(mousedownScrollX + pageX
-								- $(this.canvas).prop("mousedownPageX"));
+						this.setScrollX(mousedownScrollX + pageX - $(this.canvas).prop("mousedownPageX"));
 					}
 
 					o.update = function() {
@@ -151,18 +147,19 @@
 						var width = $(this.img).get()[0].naturalWidth;//width();
 						var ctx = this.canvas.getContext('2d');
 						var scrollX = $(this.canvas).prop("scrollX");
-						//console.log("scrollX:"+scrollX);
+						var scrollXtemp=scrollX;
 						scrollX /= this.draw_scale;
-
-						//console.log("scaled scrollX:"+scrollX);
-						//console.log("width:"+width);
+//						console.log("width:"+width);
+//						console.log("scrollX:"+scrollXtemp);
+//						console.log("scaled scrollX:"+scrollX);
+						
 						var loaded=false;
 						if (isNaN(width) == false && width != 0) {
 							while (scrollX < -width)
 								scrollX += width;
 							while (scrollX >= width)
 								scrollX -= width;
-							//console.log("conv scrollX:"+scrollX);
+//							console.log("conv scrollX:"+scrollX);
 							var imgDOM = this.img.get()[0];
 							ctx.setTransform(this.draw_scale, 0, 0, this.draw_scale, 0, 0);
 							ctx.drawImage(imgDOM, (scrollX), 0);
