@@ -1,5 +1,5 @@
 /*
- * ddpanorama - jQuery plugin version 1.11
+ * ddpanorama - jQuery plugin version 1.12
  * Copyright (c) Tiny Studio (http://tinystudio.dyndns.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
@@ -79,19 +79,26 @@
 					if ($(this).data("ddpanorama") != null)
 						return;
 					var img = $(this);//document.createElement("img");
-					var parent = $(this).parent();
+					
 					var canvas = document.createElement("canvas");
 					var o = {
 						img : img,
 						canvas : canvas,
 						mousedown : false,
-						draw_scale : 1.0
+						draw_scale : 1.0,
+						minSpeed : 0.0
 					};
 					$(this).css('display', 'none');
 					o.params = params;
 					if (o.params == null)
 						o.params = {};
 					//console.log("o.params:" + o.params);
+					o.add = function() {
+						var index = ddpanoramas.animations.indexOf(this);
+						if (index < 0) {
+							ddpanoramas.animations.push(this);
+						}
+					}
 					o.remove = function() {
 						var index = ddpanoramas.animations.indexOf(this);
 						if (index >= 0) {
@@ -99,11 +106,6 @@
 						}
 					}
 					o.setScrollX = function(scrollX) {
-//						var width = $(this.img).get()[0].naturalWidth / this.draw_scale;
-//						while (scrollX >= width)
-//							scrollX -= width;
-//						while (scrollX < -width)
-//							scrollX += width;
 
 						$(this.canvas).prop("scrollX", scrollX);
 						return scrollX;
@@ -117,10 +119,11 @@
 					}
 
 					o.update = function() {
-
 						var currentTime = (new Date()).getTime();
-						var oldTime = $(this.canvas).prop("mousemoveTime");
-						$(this.canvas).prop("mousemoveTime", currentTime);
+						var oldTime = $(this.canvas).prop("updateTime");
+						if (oldTime == null)
+							oldTime = currentTime;
+						$(this.canvas).prop("updateTime", currentTime);
 						var dt = (currentTime - oldTime) / 1000;
 						var scrollX = $(this.canvas).prop("scrollX");
 						var speedX = $(this.canvas).prop("speedX");
@@ -129,11 +132,12 @@
 
 						this.setScrollX(scrollX + dt * speedX);
 						//linear drag
-						speedX += -ddpanoramas.drag_constant * speedX * dt;
+						speedX += ddpanoramas.drag_constant * (this.minSpeed-speedX) * dt;
 						$(this.canvas).prop("speedX", speedX);
+						//console.log("update:"+scrollX+","+speedX);
 
 						this.redraw();
-						if (Math.abs(speedX) < 1) {
+						if (Math.abs(speedX) < 1 && this.minSpeed == 0) {
 							this.stop();
 							this.remove();
 						}
@@ -149,9 +153,6 @@
 						var scrollX = $(this.canvas).prop("scrollX");
 						var scrollXtemp=scrollX;
 						scrollX /= this.draw_scale;
-//						console.log("width:"+width);
-//						console.log("scrollX:"+scrollXtemp);
-//						console.log("scaled scrollX:"+scrollX);
 						
 						var loaded=false;
 						if (isNaN(width) == false && width != 0) {
@@ -189,9 +190,8 @@
 						this.remove();
 						this.stop();
 						$(canvas).prop("mousedownPageX", pageX);
-						$(canvas).prop("mousedownScrollX",
-								$(canvas).prop("scrollX"));
-						$(canvas).prop("mousemoveTime", currentTime);
+						$(canvas).prop("mousedownScrollX", $(canvas).prop("scrollX"));
+						$(canvas).prop("updateTime", currentTime);
 					}
 
 					o.resize = function() {
@@ -222,60 +222,78 @@
 					$(canvas).data('ddpanorama', o);
 					$(canvas).prop("scrollX", 0);
 					$(canvas).prop("speedX", 0);
-					$(canvas).mousedown(function(event) {
-						var o = $(this).data('ddpanorama');
-						o.onmousedown(event.pageX);
-					});
 
 					var mouseup = function(event) {
 						var o = $(this).data('ddpanorama');
 						if (o.mousedown == false)
 							return;
 						o.mousedown = false;
-						ddpanoramas.animations.push(o);
+						o.add();
 						var currentTime = (new Date()).getTime();
-						var mousemoveTimeOld = $(this).prop("mousemoveTime");
-						$(this).prop("mousemoveTime", currentTime);
+						var mousemoveTimeOld = $(this).prop("updateTime");
+						$(this).prop("updateTime", currentTime);
 
 						$(canvas).prop("speedX", ddpanoramas.speedX);
 						$(canvas).prop("mousedownScrollX", null);
 						//console.log("mouseup:speedX:"+speedX);
 					};
-					$(canvas).bind("mouseup", mouseup)
-					$(canvas).bind("mouseupoutside", mouseup);
+					
+					var minSpeed = 0;
+					var interactive=true;
+					if (params.hasOwnProperty("minSpeed"))
+						minSpeed = params.minSpeed;
+					if (params.hasOwnProperty("interactive"))
+						interactive = params.interactive;
+					
+					if (interactive)
+					{
+						$(canvas).mousedown(function(event) {
+							var o = $(this).data('ddpanorama');
+							o.onmousedown(event.pageX);
+						});
+						$(canvas).css("cursor", "move");
+						$(canvas).bind("mouseup", mouseup)
+						$(canvas).bind("mouseupoutside", mouseup);
 
-					$(canvas).bind("mousemove", function(event) {
-						var pageX = event.pageX;
-						var o = $(this).data('ddpanorama');
-						if (o.mousedown == false)
-							return;
-						o.scrollTo(pageX);
-						o.redraw();
-					});
-					$(canvas).bind("contextmenu", function(event) {
-						event.preventDefault();
-						return false;
-					});
-					$(canvas).bind("touchstart", function(event) {
-						var o = $(this).data('ddpanorama');
-						o.onmousedown(event.originalEvent.touches[0].pageX);
-					});
-					$(canvas).bind("touchmove", function(event) {
-						//document.write();
-						//console.log("touchmove");
-						event.preventDefault();
-						var o = $(this).data('ddpanorama');
-						if (o.mousedown == false)
+						$(canvas).bind("mousemove", function(event) {
+							var pageX = event.pageX;
+							var o = $(this).data('ddpanorama');
+							if (o.mousedown == false)
+								return;
+							o.scrollTo(pageX);
+							o.redraw();
+						});
+						$(canvas).bind("contextmenu", function(event) {
+							event.preventDefault();
 							return false;
-						var pageX = event.originalEvent.touches[0].pageX;
-						o.scrollTo(pageX);
-						o.redraw();
-					});
-					$(canvas).bind("touchend", mouseup);
+						});
+						$(canvas).bind("touchstart", function(event) {
+							var o = $(this).data('ddpanorama');
+							o.onmousedown(event.originalEvent.touches[0].pageX);
+						});
+						$(canvas).bind("touchmove", function(event) {
+							//document.write();
+							//console.log("touchmove");
+							event.preventDefault();
+							var o = $(this).data('ddpanorama');
+							if (o.mousedown == false)
+								return false;
+							var pageX = event.originalEvent.touches[0].pageX;
+							o.scrollTo(pageX);
+							o.redraw();
+						});
+						$(canvas).bind("touchend", mouseup);
+					}
+					o.minSpeed=minSpeed;
+					if (minSpeed != 0)
+					{
+						o.add();
+					}
+					
 					o.resize();
 					o.redraw();
 					
-					parent.append(canvas);
+					img.after(canvas);
 					$(this).load(function() {
 						o.resize();
 						o.redraw();

@@ -4,11 +4,16 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
     <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
     <script type="text/javascript" src="./ddpanorama.js"> </script>
-    <img id="mambo" class="aligncenter size-full wp-image-457" title="IMG_5634" src="http://test.cafemamboibiza.com/tours/night3.jpg" alt="" />
-    <img id="misc" class="aligncenter size-full wp-image-458" title="IMG_5639" src="http://www.gdargaud.net/Climbing/Sarek/PanoSarek.jpg" alt="" />
+    <h2>default</h2>
+    <img id="mambo" src="http://test.cafemamboibiza.com/tours/night3.jpg" alt="" />
+    <h2>minSpeed(autoscroll)</h2>
+    <img id="misc1" src="http://www.gdargaud.net/Climbing/Sarek/PanoSarek.jpg" alt="" />
+    <h2>minSpeed(autoscroll), interactive = false</h2>
+    <img id="misc2" src="http://www.gdargaud.net/Climbing/Sarek/PanoSarek.jpg" alt="" />
     <script>
         jQuery(function(){jQuery("#mambo").ddpanorama({width:645, height:520});});
-        jQuery(function(){jQuery("img").ddpanorama({width:720});});
+        jQuery(function(){jQuery("#misc1").ddpanorama({width:720, minSpeed:30});});
+        jQuery(function(){jQuery("#misc2").ddpanorama({ratio:9/16, minSpeed:20, interactive:false});});
     </script>
 </body>
 </html>
