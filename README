@@ -10,6 +10,9 @@ April 4 2012 from Kei Kim(nicekei@gmail.com)
 
 <Version history>
 
+1.20 : Added {loop:false} option to support not-wrapped image with a nice bounce effect
+       (due to a user request: thanks baloneysandwiches) 
+       Split sample html pages into multiple files to show what it is clearly in details
 1.12 : Added autoscroll feature(minSpeed parameter)
        Added interactive flag(interactive parameter)
        Fixed image to canvas converting method. Now use $.after to properly handle canvas insertion

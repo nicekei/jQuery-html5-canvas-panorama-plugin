@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
+    <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
+    <script type="text/javascript" src="./ddpanorama.js"> </script>
+    <h2>ratio:9/16, minSpeed:30</h2>
+    <img id="misc1" src="PanoSarek.jpg" alt="" />
+    <h2>ratio:9/16, minSpeed:1000</h2>
+    <img id="misc2" src="PanoSarek.jpg" alt="" />
+    <script>
+        jQuery(function(){jQuery("#misc1").ddpanorama({ratio:9/16, minSpeed:30});});
+        jQuery(function(){jQuery("#misc2").ddpanorama({ratio:9/16, minSpeed:1000});});
+    </script>
+</body>
+</html>

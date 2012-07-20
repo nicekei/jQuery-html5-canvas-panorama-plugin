@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.12
+ * ddpanorama - jQuery plugin version 1.21
  * Copyright (c) Tiny Studio (http://tinystudio.dyndns.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Wed Apr  4 09:42:51 KST 2012
+ * Date: Wed July 20 16:28:30 KST 2012
  */
 
 (function($) {
@@ -106,7 +106,21 @@
 						}
 					}
 					o.setScrollX = function(scrollX) {
-
+                        var width = $(this.img).get()[0].naturalWidth;
+                        var scrollXScale=scrollX / this.draw_scale;
+                        if (this.loop)
+                        {
+                            while (scrollXScale < -width)
+                                scrollXScale += width;
+                            while (scrollXScale >= width)
+                                scrollXScale -= width;
+                        }     
+                        else
+                        {
+                             if (scrollXScale > this.bounceBorder) scrollXScale = this.bounceBorder;
+                             if (scrollXScale < this.widthScaled-width-this.bounceBorder) scrollXScale = this.widthScaled-width-this.bounceBorder;
+                        }
+                        scrollX=scrollXScale * this.draw_scale;
 						$(this.canvas).prop("scrollX", scrollX);
 						return scrollX;
 					}
@@ -125,19 +139,91 @@
 							oldTime = currentTime;
 						$(this.canvas).prop("updateTime", currentTime);
 						var dt = (currentTime - oldTime) / 1000;
+                        
 						var scrollX = $(this.canvas).prop("scrollX");
+                        
 						var speedX = $(this.canvas).prop("speedX");
 						var ctx = this.canvas.getContext('2d');
 						var width = $(this.img).get()[0].naturalWidth;//width();
-
-						this.setScrollX(scrollX + dt * speedX);
+                        scrollX += dt * speedX;
+                        scrollX=this.setScrollX(scrollX);
+                        
+                        var bounceForce=0;
+                        if (this.loop==false)
+                        {
+                             var scrollXScale=scrollX / this.draw_scale;
+                             if (this.bounce)
+                             {
+                                 if (scrollXScale > 0)
+                                 {
+                                     if (speedX > 0)
+                                     {
+                                         speedX=0;
+                                     }
+                                     bounceForce=-scrollXScale*this.springConst;
+                                }
+                                else if (scrollXScale < this.widthScaled-width)
+                                {
+                                    if (speedX < 0)
+                                    {
+                                        speedX=0;
+                                    }
+                                    bounceForce=(this.widthScaled-width-scrollXScale) * this.springConst;
+                                 }
+                             }
+                         }
+                         
+						
 						//linear drag
-						speedX += ddpanoramas.drag_constant * (this.minSpeed-speedX) * dt;
+                         
+						
+                         
+                         
+                         //out of bound speed decay
+                         if (this.loop == false && this.bounce)
+                         {
+                            //to quickly approach border line
+                             var dt_force=dt*2.5;
+                             if (scrollXScale >= 0)
+                             {
+                                 var s=scrollXScale;
+                                 var r=s/this.bounceBorder;
+                                
+                                 if (s >= 0)
+                                 {
+                                     if (speedX < 0)
+                                     {
+                                        speedX *= r;
+                                     
+                                     }
+                                 }
+                         
+                                 speedX += bounceForce * dt_force;
+                             }
+                             
+                             else if (this.widthScaled-width-scrollXScale >= 0)
+                             {
+                                 var s=this.widthScaled-width - scrollXScale;
+                                 var r=s/this.bounceBorder;
+                                
+                                 if (s >= 0)
+                                 {
+                                     if (speedX > 0)
+                                     {
+                                        speedX *= r;
+                                     
+                                     }
+                                 }
+                                 speedX += bounceForce * dt_force;
+                             
+                             }
+                         }
+                         speedX += ddpanoramas.drag_constant * (this.minSpeed-speedX) * dt;
 						$(this.canvas).prop("speedX", speedX);
-						//console.log("update:"+scrollX+","+speedX);
+						
 
 						this.redraw();
-						if (Math.abs(speedX) < 1 && this.minSpeed == 0) {
+						if (Math.abs(speedX) < 1 && this.minSpeed == 0 && Math.abs(bounceForce) < 3) {
 							this.stop();
 							this.remove();
 						}
@@ -151,27 +237,43 @@
 						var width = $(this.img).get()[0].naturalWidth;//width();
 						var ctx = this.canvas.getContext('2d');
 						var scrollX = $(this.canvas).prop("scrollX");
-						var scrollXtemp=scrollX;
-						scrollX /= this.draw_scale;
+
+                         
+                         //console.log("this.draw_scale:"+this.draw_scale);
+                         var speedX = $(this.canvas).prop("speedX");
+                         
 						
+						scrollX /= this.draw_scale;
 						var loaded=false;
-						if (isNaN(width) == false && width != 0) {
-							while (scrollX < -width)
-								scrollX += width;
-							while (scrollX >= width)
-								scrollX -= width;
-//							console.log("conv scrollX:"+scrollX);
-							var imgDOM = this.img.get()[0];
-							ctx.setTransform(this.draw_scale, 0, 0, this.draw_scale, 0, 0);
-							ctx.drawImage(imgDOM, (scrollX), 0);
-							ctx.drawImage(imgDOM, (scrollX + width), 0);
-							ctx.drawImage(imgDOM, (scrollX - width), 0);
+						if (isNaN(width) == false && width != 0) 
+                         {
+                          $(this.canvas).prop("forceX", 0);
+                             var imgDOM = this.img.get()[0];
+                             ctx.setTransform(this.draw_scale, 0, 0, this.draw_scale, 0, 0);
+                         
+                            if (this.loop)
+                            {
+                                ctx.drawImage(imgDOM, (scrollX), 0);
+                                ctx.drawImage(imgDOM, (scrollX + width), 0);
+                                ctx.drawImage(imgDOM, (scrollX - width), 0);
+                         
+                             }
+                             else
+                             {
+                                 
+                                 ctx.drawImage(imgDOM, (scrollX), 0);
+                                 ctx.fillStyle=this.borderColor;
+                                 ctx.fillRect(0,0,scrollX, this.canvas.height/this.draw_scale);
+                                 ctx.fillRect(width + scrollX ,0,this.bounceBorder, this.canvas.height/this.draw_scale);
+                             }
+                            // $(this.canvas).prop("scrollX",scrollX * this.draw_scale ); 
 							loaded=true;
 						} else {
 							ctx.setTransform(1, 0, 0, 1, 0, 0);
 							ctx.fillStyle="#000000";
 							ctx.fillRect(0,0,this.canvas.width, this.canvas.height);
 						}
+
 						$(this.img).trigger(
 								jQuery.Event(ddpanoramas.event_prefix+"redraw", {
 									canvas : this.canvas,
@@ -192,6 +294,9 @@
 						$(canvas).prop("mousedownPageX", pageX);
 						$(canvas).prop("mousedownScrollX", $(canvas).prop("scrollX"));
 						$(canvas).prop("updateTime", currentTime);
+                         this.old_onselectstart=document.onselectstart;
+                        document.onselectstart=function(){return false;};
+                         
 					}
 
 					o.resize = function() {
@@ -199,23 +304,36 @@
 						var canvas = this.canvas;
 						var width = img.get()[0].naturalWidth;//width();
 						var height = img.get()[0].naturalHeight; //height();
-						if (this.params.hasOwnProperty("height")) {
+						if (this.params.hasOwnProperty("height")) 
+                        {
 							height = this.params.height;
-							this.draw_scale = height
-									/ img.get()[0].naturalHeight;
+							this.draw_scale = height / img.get()[0].naturalHeight;
 
 						} else {
 							this.params.draw_scale = 1;
 						}
-						if (this.params.hasOwnProperty("ratio")) {
-							width = height / this.params.ratio;
-						} else if (this.params.hasOwnProperty("width")) {
+						if (this.params.hasOwnProperty("ratio")) 
+                        {
+                            if (this.params.hasOwnProperty("width"))
+                            {
+                                width = this.params.width;
+                                height = width * this.params.ratio;
+                                this.draw_scale = height / img.get()[0].naturalHeight;
+                            }
+                            else
+                            {
+                                width = height / this.params.ratio;
+                            }
+							
+						} else if (this.params.hasOwnProperty("width")) 
+                        {
 							width = this.params.width;
 						}
 						//console.log('width:'+width);
 						$(canvas).attr('width', width);
 						$(canvas).attr('height', height);
-
+                        this.bounceBorder=this.bounceWidth/this.draw_scale;
+                        this.widthScaled = this.canvas.width / this.draw_scale;
 					}
 
 					$(this).data('ddpanorama', o);
@@ -235,6 +353,7 @@
 
 						$(canvas).prop("speedX", ddpanoramas.speedX);
 						$(canvas).prop("mousedownScrollX", null);
+                         document.onselectstart=this.old_onselectstart;
 						//console.log("mouseup:speedX:"+speedX);
 					};
 					
@@ -251,10 +370,27 @@
 							var o = $(this).data('ddpanorama');
 							o.onmousedown(event.pageX);
 						});
-						$(canvas).css("cursor", "move");
+						$(canvas).css("cursor", "pointer");
+                        //prevent selection
+                        /*
+                         disable selection : 
+                         -webkit-touch-callout: none;
+                         -webkit-user-select: none;
+                         -khtml-user-select: none;
+                         -moz-user-select: none;
+                         -ms-user-select: none;
+                         user-select: none;                         
+                         */
+                         $(canvas).css("-webkit-touch-callout", "none");
+                         $(canvas).css("-webkit-user-select", "none");
+                         $(canvas).css("-khtml-user-selec", "none");
+                         $(canvas).css("-moz-user-select", "none");
+                         $(canvas).css("-ms-user-select", "none");
+                         $(canvas).css("user-select", "none");
 						$(canvas).bind("mouseup", mouseup)
 						$(canvas).bind("mouseupoutside", mouseup);
-
+                         //$(canvas).bind("onselectstart", function (){return false;});
+                         
 						$(canvas).bind("mousemove", function(event) {
 							var pageX = event.pageX;
 							var o = $(this).data('ddpanorama');
@@ -289,10 +425,35 @@
 					{
 						o.add();
 					}
-					
+                    var loop=true;
+                    if (params.hasOwnProperty("loop"))
+                         loop = params.loop;
+					o.loop=loop;
+                    var borderColor='#000000';
+                    if (params.hasOwnProperty("loopBorderColor"))
+                         borderColor = params.loopBorderColor;
+                    o.borderColor=borderColor;
+                    var springConst=15;
+                    if (params.hasOwnProperty("springConst"))
+                         springConst = params.springConst;
+                    o.springConst=springConst;
+                    o.bounceBorder=1;
 					o.resize();
-					o.redraw();
-					
+                    var borderRate=0.8;
+                    if (params.hasOwnProperty("loopBorderRate"))
+                         borderRate = params.loopBorderRate;
+                         
+                     var bounceWidth=o.canvas.width * borderRate;
+                     //if (params.hasOwnProperty("loopBounceWidth"))
+                     //    bounceWidth = params.loopBounceWidth;
+                     o.bounceWidth=bounceWidth;
+                     o.bounceBorder=o.bounceWidth/o.draw_scale;
+					 o.redraw();
+                         
+                         var bounce=true;
+                         if (params.hasOwnProperty("loopBounce"))
+                            bounce=params.loopBounce;
+                         o.bounce=bounce;
 					img.after(canvas);
 					$(this).load(function() {
 						o.resize();

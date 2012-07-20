@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
+    <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
+    <script type="text/javascript" src="./ddpanorama.js"> </script>
+    <h2>default(loop:true)</h2>
+    <img id="mambo0" src="night3.jpeg" alt="" />
+    <h2>loop:false</h2>
+    <img id="mambo1" src="night3.jpeg" alt="" />
+    <h2>loop:false, loopBorderRate:0.1</h2>
+    <img id="mambo2" src="night3.jpeg" alt="" />
+    <h2>loop:false, loopBounce:false, loopBorderRate:0.1</h2>
+    <img id="mambo3" src="night3.jpeg" alt="" />
+    <script>
+        jQuery(function(){jQuery("#mambo0").ddpanorama({width:480, height:270});});
+        jQuery(function(){jQuery("#mambo1").ddpanorama({width:480, height:270, loop:false});});
+        jQuery(function(){jQuery("#mambo2").ddpanorama({width:480, height:270, loop:false, loopBorderRate:0.1});});
+        jQuery(function(){jQuery("#mambo3").ddpanorama({width:480, height:270, loop:false, loopBounce:false, loopBorderRate:0.1});});
+    </script>
+</body>
+</html>
