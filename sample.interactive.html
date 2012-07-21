@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html>
-<body>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
-    <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
-    <script type="text/javascript" src="./ddpanorama.js"> </script>
-    <h2>ratio:9/16(interactive:true)</h2>
-    <img id="mambo" src="night3.jpeg" alt="" />
-    <h2>ratio:9/16, interactive:false</h2>
-    <img id="mambo2" src="night3.jpeg" alt="" />
-    <h2>ratio:9/16, interactive:false, minSpeed:-20</h2>
-    <img id="mambo3" src="night3.jpeg" alt="" />
-    <script>
-        jQuery(function(){jQuery("#mambo").ddpanorama({ratio:9/16});});
-        jQuery(function(){jQuery("#mambo2").ddpanorama({ratio:9/16, interactive:false});});
-        jQuery(function(){jQuery("#mambo3").ddpanorama({ratio:9/16, interactive:false, minSpeed:-20});});
-    </script>
-</body>
+    <body>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
+        <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
+        <script type="text/javascript" src="./ddpanorama.js"> </script>
+        <script type="text/javascript" src="./ddpanorama.gensample.js"> </script>
+        <script>
+            addSamplePano("night3.jpeg", {ratio:9/16},"{ratio:9/16}");
+            addSamplePano("night3.jpeg",{ratio:9/16, interactive:false}, "{ratio:9/16, interactive:false}");
+            addSamplePano("night3.jpeg",{ratio:9/16, interactive:false, minSpeed:-20}, "{ratio:9/16, interactive:false, minSpeed:-20}");
+            </script>
+    </body>
 </html>
