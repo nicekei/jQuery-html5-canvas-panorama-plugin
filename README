@@ -6,6 +6,7 @@ Added a sample page users can directly view on the net
 
 Check following pages to see ddpanorama in action:
 
+http://dl.dropbox.com/u/1791448/ddpanorama/sample.pos.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.loop.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.basic.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.minspeed.html
@@ -16,14 +17,19 @@ http://dl.dropbox.com/u/1791448/ddpanorama/sample.event.html
 July 20 2012 from Kei Kim(nicekei@gmail.com)
 
 <Version history>
+1.23 : Added startPos parameter. You can specify relative value
+       to (imageWidth-canvasWidth). So you specify 1.0, you get
+       the 100% scrolled image
 1.22 : Changed parameter names to reduce ambiguity
            loopBounce -> bounce
            loopBorderRate -> bounceEdge
            loopBorderColor -> bounceEdgeColor
        Refactored sample htmls. Made them being generated from parameters.
-1.21 : Added {loop:false} option to support not-wrapped image with a nice bounce effect
+1.21 : Added {loop:false} option to support not-wrapped image with a nice 
+       bounce effect
        (due to a user request: thanks baloneysandwiches) 
-       Split sample html pages into multiple files to show what it is clearly in details
+       Split sample html pages into multiple files to show what it is clearly 
+       in details
 1.12 : Added autoscroll feature(minSpeed parameter)
        Added interactive flag(interactive parameter)
        Fixed image to canvas converting method. Now use $.after to properly handle 
@@ -32,8 +38,8 @@ July 20 2012 from Kei Kim(nicekei@gmail.com)
 1.10 : Fixed event handling bug(mis typo?)
        Support resized canvas drawing when height is specified
        Fills the black color when canvas image is not loaded yet
-       Added .loaded parameter to event, users can draw something until the panorama image 
-       is fully loaded
+       Added .loaded parameter to event, users can draw something until the 
+       panorama image is fully loaded
 1.01 : Added event handling support
 1.00 : Started ddpanorama
 

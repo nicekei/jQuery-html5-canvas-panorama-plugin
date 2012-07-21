@@ -1,8 +1,9 @@
 var panoIndex=0;
+var panoDefaultImageName="night3.jpeg";
 function addSamplePano(options)
 {
     var optionStr;
-    var src="night3.jpeg";
+    var src=panoDefaultImageName;
     if (arguments.length == 2)
     {
         src=arguments[0];
@@ -26,4 +27,9 @@ function addSamplePano(options)
     document.write('<img id="'+panoId+'" src="'+ src+ '" alt="" />');
     jQuery(function(){jQuery("#"+panoId).ddpanorama(options);});
     ++panoIndex;
+}
+
+function setDefaultImagePano(img)
+{
+    panoDefaultImageName=img;
 }

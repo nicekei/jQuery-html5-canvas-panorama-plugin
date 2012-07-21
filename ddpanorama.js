@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.22
+ * ddpanorama - jQuery plugin version 1.23
  * Copyright (c) Tiny Studio (http://tinystudio.dyndns.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Sat Jul 21 17:09:01 KST 2012
+ * Date: Sat Jul 21 18:07:18 KST 2012
  */
 
 
@@ -126,6 +126,7 @@
                             scrollX=scrollXScale * this.draw_scale;
                             $(this.canvas).prop("scrollX", scrollX);
                         }
+                        // console.log("scrollX:"+scrollX);
 						return scrollX;
 					}
 					o.scrollTo = function(pageX) {
@@ -306,35 +307,38 @@
 					o.resize = function() {
 						var img = this.img;
 						var canvas = this.canvas;
-						var width = img.get()[0].naturalWidth;//width();
+                        var naturalWidth=img.get()[0].naturalWidth;
+                        var naturalHeight=img.get()[0].naturalHeight;
+                        var width = naturalWidth;
 						var height = img.get()[0].naturalHeight; //height();
 						if (this.params.hasOwnProperty("height")) 
                         {
 							height = this.params.height;
-							this.draw_scale = height / img.get()[0].naturalHeight;
-						} 
-                        else 
-                        {
-							this.params.draw_scale = 1;
 						}
+                         
 						if (this.params.hasOwnProperty("ratio")) 
                         {
                             if (this.params.hasOwnProperty("width"))
                             {
                                 width = this.params.width;
                                 height = width * this.params.ratio;
-                                this.draw_scale = height / img.get()[0].naturalHeight;
                             }
                             else
                             {
                                 width = height / this.params.ratio;
                             }
-							
 						} 
                         else if (this.params.hasOwnProperty("width")) 
                         {
 							width = this.params.width;
 						}
+                        this.draw_scale = height / naturalHeight;                         
+                        if (this.params.hasOwnProperty("startPos"))
+                        {
+                         console.log("naturalWidth:"+naturalWidth);
+                         console.log("width:"+width);
+                            this.setScrollX( naturalWidth * -this.params.startPos * this.draw_scale + width);
+                        }
 						
 						$(canvas).attr('width', width);
 						$(canvas).attr('height', height);
@@ -450,28 +454,28 @@
 						o.add();
 					}
 
-                    var loop=true;
+                    o.loop=true;
                     if (params.hasOwnProperty("loop"))
-                         loop = params.loop;
-					o.loop=loop;
-                    
+                         o.loop = params.loop;
                          
                     //bounce options
-                    var bounce=true;
+                    o.bounce=true;
                     if (params.hasOwnProperty("bounce"))
-                    bounce=params.bounce;
-                    o.bounce=bounce;
-                    var bounceEdgeColor='#000000';
+                         o.bounce=params.bounce;
+                    
+                    o.bounceEdgeColor='#000000';
                     if (params.hasOwnProperty("bounceEdgeColor"))
-                         bounceEdgeColor = params.bounceEdgeColor;
-                    o.bounceEdgeColor=bounceEdgeColor;
-                    var bounceSpringConst=15;
+                         o.bounceEdgeColor = params.bounceEdgeColor;
+                    
+                    o.bounceSpringConst=15;
                     if (params.hasOwnProperty("bounceSpringConst"))
-                         bounceSpringConst = params.bounceSpringConst;
-                    o.bounceSpringConst=bounceSpringConst;
-                         
+                         o.bounceSpringConst = params.bounceSpringConst;
+                    
 					o.resize();
                     o.redraw();
+                    
+                    
+                    
 					img.after(canvas);
 					 $(this).load(function() {
                          o.resize();

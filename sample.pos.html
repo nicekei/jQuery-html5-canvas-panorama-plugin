@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
+    <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
+    <script type="text/javascript" src="./ddpanorama.js"> </script>
+    <script type="text/javascript" src="./ddpanorama.gensample.js"> </script>
+    <script>
+        setDefaultImagePano("PanoSarek.jpg");
+        addSamplePano({width:480, height:270, loop:false});
+        addSamplePano({width:480, height:270, startPos:1.0, loop:false });
+        addSamplePano({width:480, height:270, startPos:1.0});
+        addSamplePano({width:480, height:270, startPos:1.0, minSpeed:20});
+    </script>
+</body>
+</html>
