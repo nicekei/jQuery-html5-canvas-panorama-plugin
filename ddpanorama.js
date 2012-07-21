@@ -1,10 +1,11 @@
 /*
- * ddpanorama - jQuery plugin version 1.21
+ * ddpanorama - jQuery plugin version 1.22
  * Copyright (c) Tiny Studio (http://tinystudio.dyndns.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Wed July 20 16:28:30 KST 2012
+ * Date: Sat Jul 21 17:09:01 KST 2012
  */
+
 
 (function($) {
 	var ddpanoramas = {
@@ -107,21 +108,24 @@
 					}
 					o.setScrollX = function(scrollX) {
                         var width = $(this.img).get()[0].naturalWidth;
-                        var scrollXScale=scrollX / this.draw_scale;
-                        if (this.loop)
+                        if (isNaN(width) == false && width != 0)
                         {
-                            while (scrollXScale < -width)
-                                scrollXScale += width;
-                            while (scrollXScale >= width)
-                                scrollXScale -= width;
-                        }     
-                        else
-                        {
-                             if (scrollXScale > this.bounceBorder) scrollXScale = this.bounceBorder;
-                             if (scrollXScale < this.widthScaled-width-this.bounceBorder) scrollXScale = this.widthScaled-width-this.bounceBorder;
+                            var scrollXScale=scrollX / this.draw_scale;
+                            if (this.loop)
+                            {
+                                while (scrollXScale < -width)
+                                    scrollXScale += width;
+                                while (scrollXScale >= width)
+                                    scrollXScale -= width;
+                            }     
+                            else
+                            {
+                                 if (scrollXScale > this.bounceBorder) scrollXScale = this.bounceBorder;
+                                 if (scrollXScale < this.widthScaled-width-this.bounceBorder) scrollXScale = this.widthScaled-width-this.bounceBorder;
+                            }
+                            scrollX=scrollXScale * this.draw_scale;
+                            $(this.canvas).prop("scrollX", scrollX);
                         }
-                        scrollX=scrollXScale * this.draw_scale;
-						$(this.canvas).prop("scrollX", scrollX);
 						return scrollX;
 					}
 					o.scrollTo = function(pageX) {
@@ -152,7 +156,7 @@
                         if (this.loop==false)
                         {
                              var scrollXScale=scrollX / this.draw_scale;
-                             if (this.bounce)
+                             if (this.bounceActive)
                              {
                                  if (scrollXScale > 0)
                                  {
@@ -160,7 +164,7 @@
                                      {
                                          speedX=0;
                                      }
-                                     bounceForce=-scrollXScale*this.springConst;
+                                     bounceForce=-scrollXScale*this.bounceSpringConst;
                                 }
                                 else if (scrollXScale < this.widthScaled-width)
                                 {
@@ -168,7 +172,7 @@
                                     {
                                         speedX=0;
                                     }
-                                    bounceForce=(this.widthScaled-width-scrollXScale) * this.springConst;
+                                    bounceForce=(this.widthScaled-width-scrollXScale) * this.bounceSpringConst;
                                  }
                              }
                          }
@@ -182,7 +186,7 @@
                          //out of bound speed decay
                          if (this.loop == false && this.bounce)
                          {
-                            //to quickly approach border line
+                            //to quickly approach bounce edge line
                              var dt_force=dt*2.5;
                              if (scrollXScale >= 0)
                              {
@@ -262,7 +266,7 @@
                              {
                                  
                                  ctx.drawImage(imgDOM, (scrollX), 0);
-                                 ctx.fillStyle=this.borderColor;
+                                 ctx.fillStyle=this.bounceEdgeColor;
                                  ctx.fillRect(0,0,scrollX, this.canvas.height/this.draw_scale);
                                  ctx.fillRect(width + scrollX ,0,this.bounceBorder, this.canvas.height/this.draw_scale);
                              }
@@ -308,8 +312,9 @@
                         {
 							height = this.params.height;
 							this.draw_scale = height / img.get()[0].naturalHeight;
-
-						} else {
+						} 
+                        else 
+                        {
 							this.params.draw_scale = 1;
 						}
 						if (this.params.hasOwnProperty("ratio")) 
@@ -325,15 +330,34 @@
                                 width = height / this.params.ratio;
                             }
 							
-						} else if (this.params.hasOwnProperty("width")) 
+						} 
+                        else if (this.params.hasOwnProperty("width")) 
                         {
 							width = this.params.width;
 						}
-						//console.log('width:'+width);
+						
 						$(canvas).attr('width', width);
 						$(canvas).attr('height', height);
-                        this.bounceBorder=this.bounceWidth/this.draw_scale;
                         this.widthScaled = this.canvas.width / this.draw_scale;
+                        this.bounceActive=this.bounce;
+                        if (this.bounce)
+                        {
+                             var bounceEdge=0.8;
+                             if (this.params.hasOwnProperty("bounceEdge"))
+                             {
+                                bounceEdge = this.params.bounceEdge;
+                             }
+                             this.bounceBorder=this.canvas.width * bounceEdge / this.draw_scale;
+                             if ( this.bounceBorder < 1)
+                             {
+                                this.bounceActive=false;
+                             }
+                        }
+                        else
+                        {
+                             this.bounceBorder=0;
+                        }
+                        
 					}
 
 					$(this).data('ddpanorama', o);
@@ -425,40 +449,34 @@
 					{
 						o.add();
 					}
+
                     var loop=true;
                     if (params.hasOwnProperty("loop"))
                          loop = params.loop;
 					o.loop=loop;
-                    var borderColor='#000000';
-                    if (params.hasOwnProperty("loopBorderColor"))
-                         borderColor = params.loopBorderColor;
-                    o.borderColor=borderColor;
-                    var springConst=15;
-                    if (params.hasOwnProperty("springConst"))
-                         springConst = params.springConst;
-                    o.springConst=springConst;
-                    o.bounceBorder=1;
+                    
+                         
+                    //bounce options
+                    var bounce=true;
+                    if (params.hasOwnProperty("bounce"))
+                    bounce=params.bounce;
+                    o.bounce=bounce;
+                    var bounceEdgeColor='#000000';
+                    if (params.hasOwnProperty("bounceEdgeColor"))
+                         bounceEdgeColor = params.bounceEdgeColor;
+                    o.bounceEdgeColor=bounceEdgeColor;
+                    var bounceSpringConst=15;
+                    if (params.hasOwnProperty("bounceSpringConst"))
+                         bounceSpringConst = params.bounceSpringConst;
+                    o.bounceSpringConst=bounceSpringConst;
+                         
 					o.resize();
-                    var borderRate=0.8;
-                    if (params.hasOwnProperty("loopBorderRate"))
-                         borderRate = params.loopBorderRate;
-                         
-                     var bounceWidth=o.canvas.width * borderRate;
-                     //if (params.hasOwnProperty("loopBounceWidth"))
-                     //    bounceWidth = params.loopBounceWidth;
-                     o.bounceWidth=bounceWidth;
-                     o.bounceBorder=o.bounceWidth/o.draw_scale;
-					 o.redraw();
-                         
-                         var bounce=true;
-                         if (params.hasOwnProperty("loopBounce"))
-                            bounce=params.loopBounce;
-                         o.bounce=bounce;
+                    o.redraw();
 					img.after(canvas);
-					$(this).load(function() {
-						o.resize();
-						o.redraw();
-					});//load
+					 $(this).load(function() {
+                         o.resize();
+                         o.redraw();
+					 });//load
 				});
 	}//ddpanorama;
 
