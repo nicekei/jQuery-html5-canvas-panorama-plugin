@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.23
+ * ddpanorama - jQuery plugin version 1.24
  * Copyright (c) Tiny Studio (http://tinystudio.dyndns.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Sat Jul 21 18:07:18 KST 2012
+ * Date: Sat Jul 28 10:59:36 KST 2012
  */
 
 
@@ -332,11 +332,15 @@
                         {
 							width = this.params.width;
 						}
-                        this.draw_scale = height / naturalHeight;                         
-                        if (this.params.hasOwnProperty("startPos"))
+                        if (naturalHeight != 0)
+		  	  this.draw_scale = height / naturalHeight;
+			else
+			  this.draw_scale = 1.0;
+                        
+			if (this.params.hasOwnProperty("startPos"))
                         {
-                         console.log("naturalWidth:"+naturalWidth);
-                         console.log("width:"+width);
+                         //console.log("naturalWidth:"+naturalWidth);
+                         //console.log("width:"+width);
                             this.setScrollX( naturalWidth * -this.params.startPos * this.draw_scale + width);
                         }
 						
