@@ -17,6 +17,7 @@ http://dl.dropbox.com/u/1791448/ddpanorama/sample.event.html
 July 20 2012 from Kei Kim(nicekei@gmail.com)
 
 <Version history>
+1.24 : Fixed a scroll variable becoming NaN issue when load event is fired later
 1.23 : Added startPos parameter. You can specify relative value
        to (imageWidth-canvasWidth). So you specify 1.0, you get
        the 100% scrolled image
