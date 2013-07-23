@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.24
- * Copyright (c) Tiny Studio (http://tinystudio.dyndns.org/)
+ * ddpanorama - jQuery plugin version 1.30
+ * Copyright (c) Tiny Studio (http://tinystudio.iptime.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Sat Jul 28 10:59:36 KST 2012
+ * Date: Wed Jul 24 01:23:13 KST 2013
  */
 
 
@@ -77,8 +77,36 @@
 
 	$.fn.ddpanorama = function(params) {//ddpanorama
 		return this.each(function() {
-					if ($(this).data("ddpanorama") != null)
+					if ($(this).data('ddpanorama') != null)
+					{
+						if (params != null)
+						{
+						 
+//							console.log("params:" + params);
+							var o=$(this).data('ddpanorama');
+							for (var key in params)
+							{
+								o.params[key]=params[key];
+							}
+							if (o.params.minSpeed != 0)
+							{
+								o.add();
+							}
+						 
+						}
+						
 						return;
+					}
+					var defaultParameters = {
+						 interactive:true,
+						 minSpeed:0,
+						 loop:true,
+						 bounce:true,
+						 bounceEdge:0.8,
+						 bounceEdgeColor:"#000000",
+						 bounceSpringConst:15
+						 };
+						 
 					var img = $(this);//document.createElement("img");
 					
 					var canvas = document.createElement("canvas");
@@ -86,15 +114,16 @@
 						img : img,
 						canvas : canvas,
 						mousedown : false,
-						draw_scale : 1.0,
-						minSpeed : 0.0
+						draw_scale : 1.0
 					};
 					$(this).css('display', 'none');
+					
 					o.params = params;
 					if (o.params == null)
 						o.params = {};
 					//console.log("o.params:" + o.params);
 					o.add = function() {
+						$(canvas).prop("updateTime", (new Date()).getTime());
 						var index = ddpanoramas.animations.indexOf(this);
 						if (index < 0) {
 							ddpanoramas.animations.push(this);
@@ -111,7 +140,7 @@
                         if (isNaN(width) == false && width != 0)
                         {
                             var scrollXScale=scrollX / this.draw_scale;
-                            if (this.loop)
+                            if (this.params.loop)
                             {
                                 while (scrollXScale < -width)
                                     scrollXScale += width;
@@ -154,7 +183,7 @@
                         scrollX=this.setScrollX(scrollX);
                         
                         var bounceForce=0;
-                        if (this.loop==false)
+                        if (this.params.loop==false)
                         {
                              var scrollXScale=scrollX / this.draw_scale;
                              if (this.bounceActive)
@@ -165,7 +194,7 @@
                                      {
                                          speedX=0;
                                      }
-                                     bounceForce=-scrollXScale*this.bounceSpringConst;
+                                     bounceForce=-scrollXScale*this.params.bounceSpringConst;
                                 }
                                 else if (scrollXScale < this.widthScaled-width)
                                 {
@@ -173,7 +202,7 @@
                                     {
                                         speedX=0;
                                     }
-                                    bounceForce=(this.widthScaled-width-scrollXScale) * this.bounceSpringConst;
+                                    bounceForce=(this.widthScaled-width-scrollXScale) * this.params.bounceSpringConst;
                                  }
                              }
                          }
@@ -185,7 +214,7 @@
                          
                          
                          //out of bound speed decay
-                         if (this.loop == false && this.bounce)
+                         if (this.params.loop == false && this.params.bounce)
                          {
                             //to quickly approach bounce edge line
                              var dt_force=dt*2.5;
@@ -223,12 +252,12 @@
                              
                              }
                          }
-                         speedX += ddpanoramas.drag_constant * (this.minSpeed-speedX) * dt;
+                         speedX += ddpanoramas.drag_constant * (this.params.minSpeed-speedX) * dt;
 						$(this.canvas).prop("speedX", speedX);
 						
 
 						this.redraw();
-						if (Math.abs(speedX) < 1 && this.minSpeed == 0 && Math.abs(bounceForce) < 3) {
+						if (Math.abs(speedX) < 1 && this.params.minSpeed == 0 && Math.abs(bounceForce) < 3) {
 							this.stop();
 							this.remove();
 						}
@@ -256,7 +285,7 @@
                              var imgDOM = this.img.get()[0];
                              ctx.setTransform(this.draw_scale, 0, 0, this.draw_scale, 0, 0);
                          
-                            if (this.loop)
+                            if (this.params.loop)
                             {
                                 ctx.drawImage(imgDOM, (scrollX), 0);
                                 ctx.drawImage(imgDOM, (scrollX + width), 0);
@@ -267,7 +296,7 @@
                              {
                                  
                                  ctx.drawImage(imgDOM, (scrollX), 0);
-                                 ctx.fillStyle=this.bounceEdgeColor;
+                                 ctx.fillStyle=this.params.bounceEdgeColor;
                                  ctx.fillRect(0,0,scrollX, this.canvas.height/this.draw_scale);
                                  ctx.fillRect(width + scrollX ,0,this.bounceBorder, this.canvas.height/this.draw_scale);
                              }
@@ -293,12 +322,11 @@
 						var canvas = this.canvas;
 						this.mousedown = true;
 						$(canvas).prop("speedX", 0);
-						var currentTime = (new Date()).getTime();
 						this.remove();
 						this.stop();
 						$(canvas).prop("mousedownPageX", pageX);
 						$(canvas).prop("mousedownScrollX", $(canvas).prop("scrollX"));
-						$(canvas).prop("updateTime", currentTime);
+						$(canvas).prop("updateTime", (new Date()).getTime());
                          this.old_onselectstart=document.onselectstart;
                         document.onselectstart=function(){return false;};
                          
@@ -332,12 +360,12 @@
                         {
 							width = this.params.width;
 						}
-                        if (naturalHeight != 0)
-		  	  this.draw_scale = height / naturalHeight;
-			else
-			  this.draw_scale = 1.0;
+						if (naturalHeight != 0)
+							this.draw_scale = height / naturalHeight;
+						else
+							this.draw_scale = 1.0;
                         
-			if (this.params.hasOwnProperty("startPos"))
+						if (this.params.hasOwnProperty("startPos"))
                         {
                          //console.log("naturalWidth:"+naturalWidth);
                          //console.log("width:"+width);
@@ -347,14 +375,10 @@
 						$(canvas).attr('width', width);
 						$(canvas).attr('height', height);
                         this.widthScaled = this.canvas.width / this.draw_scale;
-                        this.bounceActive=this.bounce;
-                        if (this.bounce)
+                        this.bounceActive=this.params.bounce;
+                        if (this.params.bounce)
                         {
-                             var bounceEdge=0.8;
-                             if (this.params.hasOwnProperty("bounceEdge"))
-                             {
-                                bounceEdge = this.params.bounceEdge;
-                             }
+                             var bounceEdge=this.params.bounceEdge;
                              this.bounceBorder=this.canvas.width * bounceEdge / this.draw_scale;
                              if ( this.bounceBorder < 1)
                              {
@@ -379,24 +403,23 @@
 							return;
 						o.mousedown = false;
 						o.add();
-						var currentTime = (new Date()).getTime();
-						var mousemoveTimeOld = $(this).prop("updateTime");
-						$(this).prop("updateTime", currentTime);
-
+						$(canvas).prop("updateTime", (new Date()).getTime());
 						$(canvas).prop("speedX", ddpanoramas.speedX);
 						$(canvas).prop("mousedownScrollX", null);
                          document.onselectstart=this.old_onselectstart;
 						//console.log("mouseup:speedX:"+speedX);
 					};
 					
-					var minSpeed = 0;
-					var interactive=true;
-					if (params.hasOwnProperty("minSpeed"))
-						minSpeed = params.minSpeed;
-					if (params.hasOwnProperty("interactive"))
-						interactive = params.interactive;
+					//copy default parameters that does not reside in the given parameters
+					for (var key in defaultParameters)
+					{
+						if (params.hasOwnProperty(key) == false)
+						{
+							params[key]=defaultParameters[key];
+						}
+					}
 					
-					if (interactive)
+					if (params.interactive)
 					{
 						$(canvas).mousedown(function(event) {
 							var o = $(this).data('ddpanorama');
@@ -452,28 +475,12 @@
 						});
 						$(canvas).bind("touchend", mouseup);
 					}
-					o.minSpeed=minSpeed;
-					if (minSpeed != 0)
+					if (params.minSpeed != 0)
 					{
 						o.add();
 					}
 
-                    o.loop=true;
-                    if (params.hasOwnProperty("loop"))
-                         o.loop = params.loop;
-                         
-                    //bounce options
-                    o.bounce=true;
-                    if (params.hasOwnProperty("bounce"))
-                         o.bounce=params.bounce;
                     
-                    o.bounceEdgeColor='#000000';
-                    if (params.hasOwnProperty("bounceEdgeColor"))
-                         o.bounceEdgeColor = params.bounceEdgeColor;
-                    
-                    o.bounceSpringConst=15;
-                    if (params.hasOwnProperty("bounceSpringConst"))
-                         o.bounceSpringConst = params.bounceSpringConst;
                     
 					o.resize();
                     o.redraw();
