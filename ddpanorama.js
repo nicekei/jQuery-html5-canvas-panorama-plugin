@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.30
+ * ddpanorama - jQuery plugin version 1.31
  * Copyright (c) Tiny Studio (http://tinystudio.iptime.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Wed Jul 24 01:23:13 KST 2013
+ * Date: Thu Aug 22 23:53:24 KST 2013
  */
 
 
@@ -76,23 +76,57 @@
 	});
 
 	$.fn.ddpanorama = function(params) {//ddpanorama
+		//clone input parameters to prevent not intended side effects eg. overwritting user parameters
+		params=jQuery.extend(true, {}, params);
 		return this.each(function() {
 					if ($(this).data('ddpanorama') != null)
 					{
 						if (params != null)
 						{
-						 
-//							console.log("params:" + params);
 							var o=$(this).data('ddpanorama');
+							var hasSizeParameter=false;
+							for (var key in params)
+							{
+								//console.log("key:"+key);
+								if (key=="width" || key=="height" || key=="ratio")
+								{
+									hasSizeParameter=true;
+									break;
+								}
+							}
+							if (hasSizeParameter)
+							{
+								if (o.params.hasOwnProperty("width"))
+								{
+									delete o.params.width;
+									//console.log("remove width");
+								}
+								if (o.params.hasOwnProperty("height"))
+								{
+									delete o.params.height;
+									//console.log("remove height");
+								}
+								if (o.params.hasOwnProperty("ratio"))
+								{
+									delete o.params.ratio;
+									//console.log("remove ratio");
+								}
+								//console.log("hasSizeParameter");
+							}
 							for (var key in params)
 							{
 								o.params[key]=params[key];
+								//console.log("copying key "+key);
 							}
+							//check if one of the size parameter is specified
+							//if this is the case, we need to drop old size parameters
+							
 							if (o.params.minSpeed != 0)
 							{
 								o.add();
 							}
-						 
+							o.resize();
+							o.redraw();
 						}
 						
 						return;
@@ -338,14 +372,18 @@
                         var naturalWidth=img.get()[0].naturalWidth;
                         var naturalHeight=img.get()[0].naturalHeight;
                         var width = naturalWidth;
-						var height = img.get()[0].naturalHeight; //height();
+						var height = naturalHeight; //height();
+						 //console.log("naturalWidth:"+naturalWidth);
+						 //console.log("naturalHeight:"+naturalHeight);
 						if (this.params.hasOwnProperty("height")) 
                         {
+							//console.log("height:"+this.params.height);
 							height = this.params.height;
 						}
                          
 						if (this.params.hasOwnProperty("ratio")) 
                         {
+							//console.log("ratio:"+this.params.ratio);
                             if (this.params.hasOwnProperty("width"))
                             {
                                 width = this.params.width;
@@ -360,6 +398,7 @@
                         {
 							width = this.params.width;
 						}
+						 //console.log("width:"+width);
 						if (naturalHeight != 0)
 							this.draw_scale = height / naturalHeight;
 						else
