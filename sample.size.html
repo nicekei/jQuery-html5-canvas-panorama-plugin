@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
-        <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
-        <script type="text/javascript" src="./ddpanorama.js"> </script>
-        <script type="text/javascript" src="./ddpanorama.gensample.js"> </script>
-        <script>
-            addSamplePano({width:645, height:520});
-            addSamplePano("night3.jpeg", {ratio:9/16}, "{ratio:9/16} (note that original image's height is used)");
-            addSamplePano("night3.jpeg", {height:320, ratio:9/16},"{height:320, ratio:9/16}");
-            addSamplePano("night3.jpeg", {width:320, ratio:9/16},"{width:320, ratio:9/16}");
-            </script>
-    </body>
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+		<script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.gensample.js"> </script>
+	</head>
+	<body>
+		<script>
+			addSamplePano({width:645, height:520});
+			addSamplePano("night3.jpeg", {ratio:9/16}, "{ratio:9/16} (note that original image's height is used)");
+			addSamplePano("night3.jpeg", {height:320, ratio:9/16},"{height:320, ratio:9/16}");
+			addSamplePano("night3.jpeg", {width:320, ratio:9/16},"{width:320, ratio:9/16}");
+		</script>
+	</body>
 </html>

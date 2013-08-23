@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+        <script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+	</head>
+	<body>
+		<img src="PanoSarek.jpg" alt="" />
+		<br />
+		<button id="interactive">interactive</button>
+		<button id="non_interactive">non_interactive</button>
+		<script>
+			//see 
+			jQuery(function(){
+				   var moveSpeed=150;
+				   jQuery("img").ddpanorama({ratio:9/16}).bind("ddredraw", function(event){
+																		  //do something here to handle redraw event
+																		  //event.speed contains a speed (px/sec)
+																		  //event.canvas contains a canvas element
+																		  //event.loaded contains a boolean flag which indicates whether the image is loaded or not 
+																		  //(I'll add later more compelling examples later)
+																		  });
+				   jQuery("#interactive").click(function(){
+										 jQuery("img").ddpanorama({interactive:true});
+										 });
+				   jQuery("#non_interactive").click(function(){
+										 jQuery("img").ddpanorama({interactive:false});
+										 });
+				   
+				   });
+		</script>
+	</body>
+</html>

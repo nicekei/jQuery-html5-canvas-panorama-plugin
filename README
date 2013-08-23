@@ -6,19 +6,41 @@ Added a sample page users can directly view on the net
 
 Check following pages to see ddpanorama in action:
 
+http://dl.dropbox.com/u/1791448/ddpanorama/sample.event.html (NEW)
+http://dl.dropbox.com/u/1791448/ddpanorama/sample.eventredraw.html (NEW)
+http://dl.dropbox.com/u/1791448/ddpanorama/sample.dynamicsize.html (NEW)
+http://dl.dropbox.com/u/1791448/ddpanorama/sample.dynamicinteractive.html (NEW)
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.pos.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.loop.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.basic.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.minspeed.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.size.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.interactive.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.event.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.event2.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.dynamicsize.html
-
-July 20 2012 from Kei Kim(nicekei@gmail.com)
 
 <Version history>
+1.40 : Now CSS is separated from codes. Note that to work as
+       before, you need to include "ddpanorama.css" as a stylesheet in your pages
+
+       Event prefix is changed from "ddpanorama_" to "dd". eg. ddpanorama_redraw -> ddredraw
+
+       "init" event is added which is called when the canvas is initialized -
+       a good place to retrieve canvas and apply any additional properties to it
+
+       In case the interactive flag is turned off, the panning cursor didn't showup in Webkit
+       browsers(up to 1.31). This is fixed in the current version.
+
+       Event demo(sample.event.html) code is rewritten. Now you can check all the event life cycles
+       ("startmove", "stopmove", "mousedown", "mouseup" events are added)
+
+       Fullscreen demo(sample.dynamicsize.html) code is refactored to show the demonstration clearly.
+       Note that the ugly bottom scroll bar is gone by CSS's blessing(width:100%)
+
+       Redraw event demo(sample.eventredraw.html) shows how to draw something on top of the panorama
+
+       Refactored codes to support changing "defaults" which decides panoramas' default
+       parameters
+
+
 1.31 : Size change is also supported
 1.30 : Support changing panorama parameters after it is created
 1.24 : Fixed a scroll variable becoming NaN issue when load event is fired later

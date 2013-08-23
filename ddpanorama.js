@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.31
+ * ddpanorama - jQuery plugin version 1.40
  * Copyright (c) Tiny Studio (http://tinystudio.iptime.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Thu Aug 22 23:53:24 KST 2013
+ * Date: Fri Aug 23 17:52:26 KST 2013
  */
 
 
@@ -51,7 +51,7 @@
 
 	}
     
-	ddpanoramas.event_prefix="ddpanorama_";
+	ddpanoramas.event_prefix="dd";
 	
 	$(document).bind("mousemove", function(event) {
 		ddpanoramas.mousemove(event.pageX, event.pageY);
@@ -77,23 +77,23 @@
 
 	$.fn.ddpanorama = function(params) {//ddpanorama
 		//clone input parameters to prevent not intended side effects eg. overwritting user parameters
-		params=jQuery.extend(true, {}, params);
+		params = $.extend( true, {}, $.fn.ddpanorama.defaults, params );
+		var hasSizeParameter=false;
+		for (var key in params)
+		{
+			//console.log("key:"+key);
+			if (key=="width" || key=="height" || key=="ratio")
+			{
+				hasSizeParameter=true;
+				break;
+			}
+		}
 		return this.each(function() {
 					if ($(this).data('ddpanorama') != null)
 					{
 						if (params != null)
 						{
 							var o=$(this).data('ddpanorama');
-							var hasSizeParameter=false;
-							for (var key in params)
-							{
-								//console.log("key:"+key);
-								if (key=="width" || key=="height" || key=="ratio")
-								{
-									hasSizeParameter=true;
-									break;
-								}
-							}
 							if (hasSizeParameter)
 							{
 								if (o.params.hasOwnProperty("width"))
@@ -125,21 +125,12 @@
 							{
 								o.add();
 							}
+							o.bindevent();
 							o.resize();
-							o.redraw();
 						}
 						
 						return;
 					}
-					var defaultParameters = {
-						 interactive:true,
-						 minSpeed:0,
-						 loop:true,
-						 bounce:true,
-						 bounceEdge:0.8,
-						 bounceEdgeColor:"#000000",
-						 bounceSpringConst:15
-						 };
 						 
 					var img = $(this);//document.createElement("img");
 					
@@ -156,21 +147,46 @@
 					if (o.params == null)
 						o.params = {};
 					//console.log("o.params:" + o.params);
+					o.notifyStartMove=function()
+					{
+						if (this.startmovecalled != true)
+						{
+							this.startmovecalled=true;
+							var scrollX = $(this.canvas).prop("scrollX");
+							$(this.img).trigger(
+									jQuery.Event(ddpanoramas.event_prefix+"startmove", {
+										canvas : this.canvas,
+										scrollX : scrollX
+									}));
+						}
+					}
+
 					o.add = function() {
 						$(canvas).prop("updateTime", (new Date()).getTime());
 						var index = ddpanoramas.animations.indexOf(this);
 						if (index < 0) {
 							ddpanoramas.animations.push(this);
+							this.notifyStartMove();
 						}
 					}
 					o.remove = function() {
 						var index = ddpanoramas.animations.indexOf(this);
-						if (index >= 0) {
+						if (index >= 0)
+						{
+							var scrollX = $(this.canvas).prop("scrollX");
+							$(this.img).trigger(
+									jQuery.Event(ddpanoramas.event_prefix+"stopmove", {
+										canvas : this.canvas,
+										scrollX : scrollX
+									}));
+							this.startmovecalled=false;
 							ddpanoramas.animations.splice(index, 1);
 						}
 					}
 					o.setScrollX = function(scrollX) {
+						//console.log("setScrollX:"+scrollX);
                         var width = $(this.img).get()[0].naturalWidth;
+						//console.log("setScrollX - width:"+width);
                         if (isNaN(width) == false && width != 0)
                         {
                             var scrollXScale=scrollX / this.draw_scale;
@@ -307,7 +323,8 @@
 						var scrollX = $(this.canvas).prop("scrollX");
 
                          
-                         //console.log("this.draw_scale:"+this.draw_scale);
+                        //console.log("scrollX:"+scrollX);
+						//console.log("this.draw_scale:"+this.draw_scale);
                          var speedX = $(this.canvas).prop("speedX");
                          
 						
@@ -317,6 +334,7 @@
                          {
                           $(this.canvas).prop("forceX", 0);
                              var imgDOM = this.img.get()[0];
+						 //console.log("this.draw_scale:"+this.draw_scale);
                              ctx.setTransform(this.draw_scale, 0, 0, this.draw_scale, 0, 0);
                          
                             if (this.params.loop)
@@ -324,7 +342,9 @@
                                 ctx.drawImage(imgDOM, (scrollX), 0);
                                 ctx.drawImage(imgDOM, (scrollX + width), 0);
                                 ctx.drawImage(imgDOM, (scrollX - width), 0);
-                         
+								//console.log("imgDOM(1):"+imgDOM);
+								//console.log("scrollX(1):"+scrollX);
+								//console.log("scrollX + width(1):"+scrollX + width);
                              }
                              else
                              {
@@ -333,6 +353,9 @@
                                  ctx.fillStyle=this.params.bounceEdgeColor;
                                  ctx.fillRect(0,0,scrollX, this.canvas.height/this.draw_scale);
                                  ctx.fillRect(width + scrollX ,0,this.bounceBorder, this.canvas.height/this.draw_scale);
+								//console.log("scrollX(2):"+scrollX);
+								//console.log("scrollX + width(2):"+scrollX + width);
+						 
                              }
                             // $(this.canvas).prop("scrollX",scrollX * this.draw_scale ); 
 							loaded=true;
@@ -344,6 +367,7 @@
 
 						$(this.img).trigger(
 								jQuery.Event(ddpanoramas.event_prefix+"redraw", {
+									scrollX : scrollX,
 									canvas : this.canvas,
 									speed : $(this.canvas).prop("speedX") / ddpanoramas.max_speed,
 									loaded : loaded
@@ -351,19 +375,28 @@
 					}
 
 					o.onmousedown = function(pageX) {
-						//console.log("mousedown");
+//						console.log("mousedown");
 						var o = this;
 						var canvas = this.canvas;
 						this.mousedown = true;
+						var scrollX = $(this.canvas).prop("scrollX");
 						$(canvas).prop("speedX", 0);
+						$(canvas).focus();
 						this.remove();
 						this.stop();
 						$(canvas).prop("mousedownPageX", pageX);
 						$(canvas).prop("mousedownScrollX", $(canvas).prop("scrollX"));
 						$(canvas).prop("updateTime", (new Date()).getTime());
-                         this.old_onselectstart=document.onselectstart;
-                        document.onselectstart=function(){return false;};
-                         
+                        this.old_onselectstart=document.onselectstart;
+						document.onselectstart=function(){return false;};
+						var scrollX = $(this.canvas).prop("scrollX");
+						$(this.img).trigger(
+								jQuery.Event(ddpanoramas.event_prefix+"mousedown", {
+									canvas : this.canvas,
+									scrollX : scrollX
+								}));
+						 
+						this.notifyStartMove();
 					}
 
 					o.resize = function() {
@@ -373,8 +406,8 @@
                         var naturalHeight=img.get()[0].naturalHeight;
                         var width = naturalWidth;
 						var height = naturalHeight; //height();
-						 //console.log("naturalWidth:"+naturalWidth);
-						 //console.log("naturalHeight:"+naturalHeight);
+//						console.log("resize.naturalWidth:"+naturalWidth);
+//						console.log("resize.naturalHeight:"+naturalHeight);
 						if (this.params.hasOwnProperty("height")) 
                         {
 							//console.log("height:"+this.params.height);
@@ -428,8 +461,14 @@
                         {
                              this.bounceBorder=0;
                         }
-                        
+						//console.log("this.bounceBorder:"+this.bounceBorder);
+						$(img).trigger(jQuery.Event(ddpanoramas.event_prefix+"resize", {canvas : canvas}));
+						//console.log("this:"+this);
+						//calling immediately after size event is sometimes problematic in chrome
+						//this.add();
+						if (this.loaded) this.redraw();
 					}
+						 
 
 					$(this).data('ddpanorama', o);
 					$(canvas).data('ddpanorama', o);
@@ -445,93 +484,121 @@
 						$(canvas).prop("updateTime", (new Date()).getTime());
 						$(canvas).prop("speedX", ddpanoramas.speedX);
 						$(canvas).prop("mousedownScrollX", null);
-                         document.onselectstart=this.old_onselectstart;
+                        document.onselectstart=this.old_onselectstart;
 						//console.log("mouseup:speedX:"+speedX);
+						var scrollX = $(canvas).prop("scrollX");
+						$(o.img).trigger(
+								jQuery.Event(ddpanoramas.event_prefix+"mouseup", {
+									canvas : canvas,
+									scrollX : scrollX
+								}));
+						 
 					};
 					
-					//copy default parameters that does not reside in the given parameters
-					for (var key in defaultParameters)
+					o.bindevent = function()
 					{
-						if (params.hasOwnProperty(key) == false)
+						var o = this;
+						var canvas = this.canvas;
+						$(canvas).unbind("mousedown");
+						$(canvas).unbind("mouseup");
+						$(canvas).unbind("mouseupoutside")
+						$(canvas).unbind("mousemove");
+						$(canvas).unbind("contextmenu");
+						$(canvas).unbind("touchstart");
+						$(canvas).unbind("touchmove");
+						$(canvas).unbind("touchend");
+						if (this.params.interactive)
 						{
-							params[key]=defaultParameters[key];
+							$(canvas).bind("mousedown", function(event) {
+								var o = $(this).data('ddpanorama');
+								o.onmousedown(event.pageX);
+							});
+						 
+							$(canvas).bind("mouseup", mouseup)
+							$(canvas).bind("mouseupoutside", mouseup);
+							 //$(canvas).bind("onselectstart", function (){return false;});
+							 
+							$(canvas).bind("mousemove", function(event) {
+								var pageX = event.pageX;
+								var o = $(this).data('ddpanorama');
+								if (o.mousedown == false)
+									return;
+								o.scrollTo(pageX);
+								o.redraw();
+							});
+							$(canvas).bind("contextmenu", function(event) {
+								event.preventDefault();
+								return false;
+							});
+							$(canvas).bind("touchstart", function(event) {
+								var o = $(this).data('ddpanorama');
+								o.onmousedown(event.originalEvent.touches[0].pageX);
+								
+							});
+							$(canvas).bind("touchmove", function(event) {
+								//document.write();
+								//console.log("touchmove");
+								event.preventDefault();
+								var o = $(this).data('ddpanorama');
+								if (o.mousedown == false)
+									return false;
+								var pageX = event.originalEvent.touches[0].pageX;
+								o.scrollTo(pageX);
+								o.redraw();
+								return true;
+							});
+							$(canvas).bind("touchend", mouseup);
+						}
+						else
+						{
+							var mouseupdummy=function(event){
+											if (o.mousedown == false) return;
+											o.mousedown = false;
+											document.onselectstart=this.old_onselectstart;
+										}
+							$(canvas).bind("mousedown",function(event){
+											this.old_onselectstart=document.onselectstart;
+											document.onselectstart=function(){return false;};
+											o.mousedown=true;
+										});
+							$(canvas).bind("mouseup",mouseupdummy);
+							$(canvas).bind("mouseupoutside",mouseupdummy)
+							
 						}
 					}
 					
-					if (params.interactive)
-					{
-						$(canvas).mousedown(function(event) {
-							var o = $(this).data('ddpanorama');
-							o.onmousedown(event.pageX);
-						});
-						$(canvas).css("cursor", "pointer");
-                        //prevent selection
-                        /*
-                         disable selection : 
-                         -webkit-touch-callout: none;
-                         -webkit-user-select: none;
-                         -khtml-user-select: none;
-                         -moz-user-select: none;
-                         -ms-user-select: none;
-                         user-select: none;                         
-                         */
-                         $(canvas).css("-webkit-touch-callout", "none");
-                         $(canvas).css("-webkit-user-select", "none");
-                         $(canvas).css("-khtml-user-selec", "none");
-                         $(canvas).css("-moz-user-select", "none");
-                         $(canvas).css("-ms-user-select", "none");
-                         $(canvas).css("user-select", "none");
-						$(canvas).bind("mouseup", mouseup)
-						$(canvas).bind("mouseupoutside", mouseup);
-                         //$(canvas).bind("onselectstart", function (){return false;});
-                         
-						$(canvas).bind("mousemove", function(event) {
-							var pageX = event.pageX;
-							var o = $(this).data('ddpanorama');
-							if (o.mousedown == false)
-								return;
-							o.scrollTo(pageX);
-							o.redraw();
-						});
-						$(canvas).bind("contextmenu", function(event) {
-							event.preventDefault();
-							return false;
-						});
-						$(canvas).bind("touchstart", function(event) {
-							var o = $(this).data('ddpanorama');
-							o.onmousedown(event.originalEvent.touches[0].pageX);
-						});
-						$(canvas).bind("touchmove", function(event) {
-							//document.write();
-							//console.log("touchmove");
-							event.preventDefault();
-							var o = $(this).data('ddpanorama');
-							if (o.mousedown == false)
-								return false;
-							var pageX = event.originalEvent.touches[0].pageX;
-							o.scrollTo(pageX);
-							o.redraw();
-						});
-						$(canvas).bind("touchend", mouseup);
-					}
+						 
 					if (params.minSpeed != 0)
 					{
 						o.add();
 					}
 
                     
-                    
+                    o.bindevent();
 					o.resize();
-                    o.redraw();
-                    
+					$(canvas).addClass("ddpanorama");
+                    o.loaded=false;
                     
                     
 					img.after(canvas);
-					 $(this).load(function() {
-                         o.resize();
-                         o.redraw();
-					 });//load
+
+					$(this).load(function() {
+//						console.log("image loaded");
+						$(img).trigger(jQuery.Event(ddpanoramas.event_prefix+"init", {canvas : canvas}));
+                        o.resize();
+						o.redraw();
+						o.loaded=true;
+					});//load
 				});
 	}//ddpanorama;
-
+	
+	$.fn.ddpanorama.defaults = {
+		interactive:true,
+		minSpeed:0,
+		loop:true,
+		bounce:true,
+		bounceEdge:0.8,
+		bounceEdgeColor:"#000000",
+		bounceSpringConst:15
+	};
 })(jQuery);

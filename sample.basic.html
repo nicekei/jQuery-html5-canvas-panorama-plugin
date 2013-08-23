@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
-        <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
-        <script type="text/javascript" src="./ddpanorama.js"> </script>
-        <script type="text/javascript" src="./ddpanorama.gensample.js"> </script>
-        <script>
-            addSamplePano({width:645, height:520});
-            addSamplePano({width:480, height:270, loop:false, bounceEdge:0.3});
-            addSamplePano({width:480, height:270, loop:false, bounce:false});
-            addSamplePano("PanoSarek.jpg", {width:720, minSpeed:30});
-            addSamplePano("PanoSarek.jpg", {ratio:9/16, minSpeed:20, interactive:false}, "{ratio:9/16, minSpeed:20, interactive:false}");
-            </script>
-    </body>
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+		<script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.gensample.js"> </script>
+	</head>
+	<body>
+		<script>
+			addSamplePano({width:645, height:520});
+			addSamplePano({width:480, height:270, loop:false, bounceEdge:0.3});
+			addSamplePano({width:480, height:270, loop:false, bounce:false});
+			addSamplePano("PanoSarek.jpg", {width:720, minSpeed:30});
+			addSamplePano("PanoSarek.jpg", {ratio:9/16, minSpeed:20, interactive:false}, "{ratio:9/16, minSpeed:20, interactive:false}");
+		</script>
+	</body>
 </html>

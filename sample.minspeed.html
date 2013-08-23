@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
-        <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
-        <script type="text/javascript" src="./ddpanorama.js"> </script>
-        <script type="text/javascript" src="./ddpanorama.gensample.js"> </script>
-        <script>
-            addSamplePano({ratio:9/16, minSpeed:30});
-            addSamplePano({ratio:9/16, minSpeed:1000});
-            </script>
-    </body>
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+		<script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.gensample.js"> </script>
+	</head>
+	<body>
+		<script>
+			addSamplePano({ratio:9/16, minSpeed:30});
+			addSamplePano({ratio:9/16, minSpeed:1000});
+		</script>
+	</body>
 </html>

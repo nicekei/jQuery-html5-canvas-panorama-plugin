@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+        <script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+	</head>
+	<body>
+		
+		<img src="PanoSarek.jpg" />
+		<script>
+			//see 
+			jQuery(function(){jQuery("img").ddpanorama({ratio:9/16}).bind("ddredraw", function(event){
+																		  //do something here to handle redraw event
+																		  //event.speed contains a speed (px/sec)
+																		  //event.canvas contains a canvas element
+																		  //event.loaded contains a boolean flag which indicates whether the image is loaded or not 
+																		  //(I'll add later more compelling examples later)
+																		  var canvas=event.canvas;
+																		  var ctx=canvas.getContext("2d");
+																		  ctx.beginPath();
+																		  ctx.arc(event.scrollX+canvas.width/2,canvas.height/2,40,0,2*Math.PI);
+																		  ctx.stroke();
+																		  ctx.beginPath();
+																		  ctx.arc(canvas.width/2,canvas.height/2,50,0,2*Math.PI);
+																		  
+																		  ctx.stroke();
+																		  });});
+		</script>
+	</body>
+</html>

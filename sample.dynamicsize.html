@@ -1,112 +1,81 @@
 <!DOCTYPE html>
 <html>
-<body>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
-    <script type="text/javascript" src="./jquery.ba-outside-events.min.js"> </script>
-    <script type="text/javascript" src="./ddpanorama.js"> </script>
-    
-    <img class="aligncenter size-full wp-image-458" title="IMG_5639" src="PanoSarek.jpg" alt="" />
-	<br />
-	<button id="original">original size</button>
-	<button id="size1">1024x768</button>
-	<button id="fullscreen">fullscreen</button>
-    <script>
-		
-		//code snippet from http://www.sitepoint.com/html5-full-screen-api/
-		var pfx = ["webkit", "moz", "ms", "o", ""];
-		function RunPrefixMethod(obj, method) {
-			var p = 0, m, t;
-			while (p < pfx.length && !obj[m]) {
-				m = method;
-				if (pfx[p] == "") {
-					m = m.substr(0,1).toLowerCase() + m.substr(1);
-				}
-				m = pfx[p] + m;
-				t = typeof obj[m];
-				if (t != "undefined") {
-					//console.log("m:"+m);
-					pfx = [pfx[p]];
-					return (t == "function" ? obj[m]() : obj[m]);
-				}
-				p++;
-			}
-		}
-		//end of code snippet
-		var sizeparameter_original={ratio:9/16};
-		var sizeparameter=sizeparameter_original;
-		var sizeparameter_full={};
-		function refreshPanoramaSize(parameter)
-		{
-			jQuery("img").ddpanorama(parameter);
-		}
-		
-		function launchFullScreen() {
-			RunPrefixMethod(document.documentElement, "RequestFullScreen");
-		}
-		
-		function fullScreenEnabled()
-		{
-			return RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen");
-		}
-		
-		function cancelFullScreen()
-		{
-			if (fullScreenEnabled())
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+		<script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.fullscreen.js"> </script>
+	</head>
+	<body>
+		<img src="PanoSarek.jpg" alt="" />
+		<br />
+		<button id="original">original size</button>
+		<button id="size1">1024x768</button>
+		<button id="fullscreen">fullscreen</button>
+		<script>
+			//Note that you don't need to use ddpanorama.fullscreen.js in thr production code.
+			//The point is that ddpanorama supports changing its resolution after being created
+			
+			//end of code snippet
+			var sizeparameter_original={ratio:9/16};
+			var sizeparameter=sizeparameter_original;
+			function setFullScreen(flag, parameter)
 			{
-				//console.log("exit fullscreen");
-				RunPrefixMethod(document, "CancelFullScreen");
+				if (flag != ddFullScreenEnabled())
+				{
+					if (flag)
+					{
+						ddLaunchFullScreen();
+					}
+					else
+					{
+						ddCancelFullScreen();
+					}
+				}
+				else
+				{
+					if (flag == false)
+					{
+						sizeparameter=parameter;
+					}
+					jQuery("img").ddpanorama(parameter);
+				}
 			}
-			else
-			{
-				//console.log("not a fullscreen mode");
-				refreshPanoramaSize(sizeparameter);
-			}
-		}
-		
-		
-		
-        //see
-        jQuery(function(){
-			   jQuery("img").ddpanorama(sizeparameter_original).bind("ddpanorama_redraw", function(event){
-                                                                      //do something here to handle redraw event
-                                                                      //event.speed contains a speed (px/sec)
-                                                                      //event.canvas contains a canvas element
-                                                                      //event.loaded contains a boolean flag which indicates whether the image is loaded or not 
-                                                                      //(I'll add more compelling examples later)
-                                                                      });
-			   
-			   var screen_change_events = "webkitfullscreenchange mozfullscreenchange fullscreenchange";
-			   $(document).on(screen_change_events, function ()
-							  {
-							  //console.log("screen_change_events");
-									if (fullScreenEnabled())
-									{
-										//console.log("window.innerWidth:"+window.innerWidth);
-										//sizeparameter_full={width:window.innerWidth, height:window.innerHeight};
-										sizeparameter_full={width:$(document).width(), height:$(document).height()};
-										refreshPanoramaSize(sizeparameter_full);
-									}
-									else
-									{
-										refreshPanoramaSize(sizeparameter);
-									}
-							  });
-			   jQuery("#original").click(function(){
-										 sizeparameter=sizeparameter_original;
-										 cancelFullScreen();
-									 });
-			   jQuery("#size1").click(function(){
-									  sizeparameter={width:1024, height:768};
-									  cancelFullScreen();
-									 });
-			   
-			   jQuery("#fullscreen").click(function(){
-										   
-										   launchFullScreen();
-										   
-										   });
-			   
-			   });
-    </script>
-</body>
+			
+			jQuery(function(){
+				   jQuery("img").ddpanorama(sizeparameter)
+				   .bind("ddinit", function(event)
+					{
+						 //event.canvas : canvas
+					})
+				   .bind("ddresize", function(event)
+				   {
+						 //event.canvas : canvas
+						if (ddFullScreenEnabled())
+					   {
+						   $(event.canvas).css("width", "100%");
+					   }
+					   else
+					   {
+						   $(event.canvas).css("width", "");
+					   }
+				   });
+				   
+				   ddBindFullScreenEvent(function (flag){
+										setFullScreen(flag, flag ? {height:$(document).height()} : sizeparameter);
+									});
+				   jQuery("#original").click(function(){
+										setFullScreen(false, sizeparameter_original);
+									});
+				   jQuery("#size1").click(function(){
+										setFullScreen(false, {width:1024, height:768});
+									});
+				   jQuery("#fullscreen").click(function(){
+										ddLaunchFullScreen();
+									});
+				   
+				   });
+		</script>
+	</body>
 </html>

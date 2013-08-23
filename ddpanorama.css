@@ -1,0 +1,19 @@
+//css snippet from https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/issues/4
+canvas.ddpanorama {
+   cursor: url(./images/openhand.cur), e-resize// you need a default here for this to work
+   cursor:-webkit-grab;
+   cursor: -moz-grab;
+   cursor: grab;                    // some future proofing
+   -webkit-user-select: none;
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+canvas.ddpanorama:active {
+   cursor: url(./images/closedhand.cur), e-resize;
+   cursor: -webkit-grabbing;
+   cursor: -moz-grabbing;
+   cursor: grabbing;
+}
