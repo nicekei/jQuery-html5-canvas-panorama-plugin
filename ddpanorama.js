@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.40
+ * ddpanorama - jQuery plugin version 1.41
  * Copyright (c) Tiny Studio (http://tinystudio.iptime.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: Fri Aug 23 17:52:26 KST 2013
+ * Date: Mon Aug 26 19:09:41 KST 2013
  */
 
 
@@ -406,8 +406,8 @@
                         var naturalHeight=img.get()[0].naturalHeight;
                         var width = naturalWidth;
 						var height = naturalHeight; //height();
-//						console.log("resize.naturalWidth:"+naturalWidth);
-//						console.log("resize.naturalHeight:"+naturalHeight);
+						console.log("resize.naturalWidth:"+naturalWidth);
+						console.log("resize.naturalHeight:"+naturalHeight);
 						if (this.params.hasOwnProperty("height")) 
                         {
 							//console.log("height:"+this.params.height);
@@ -575,15 +575,16 @@
 
                     
                     o.bindevent();
-					o.resize();
+					//o.resize();
 					$(canvas).addClass("ddpanorama");
                     o.loaded=false;
                     
                     
-					img.after(canvas);
+						 
 
 					$(this).load(function() {
 //						console.log("image loaded");
+						img.after(canvas);
 						$(img).trigger(jQuery.Event(ddpanoramas.event_prefix+"init", {canvas : canvas}));
                         o.resize();
 						o.redraw();
