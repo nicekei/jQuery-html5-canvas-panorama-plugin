@@ -11,9 +11,9 @@
 	<body>
 		<script>
 			addSamplePano({width:645, height:520});
-			addSamplePano("night3.jpeg", {ratio:9/16}, "{ratio:9/16} (note that original image's height is used)");
-			addSamplePano("night3.jpeg", {height:320, ratio:9/16},"{height:320, ratio:9/16}");
-			addSamplePano("night3.jpeg", {width:320, ratio:9/16},"{width:320, ratio:9/16}");
+			addSamplePano({width:480, height:270, loop:false, bounceEdge:0.3});
+			addSamplePano({width:480, height:270, loop:false, bounce:false});
+			addSamplePano("PanoSarek.jpg", {ratio:9/16, minSpeed:20, interactive:false}, "{ratio:9/16, minSpeed:20, interactive:false}");
 		</script>
 	</body>
 </html>

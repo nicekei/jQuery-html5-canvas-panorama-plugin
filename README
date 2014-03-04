@@ -18,6 +18,25 @@ http://dl.dropbox.com/u/1791448/ddpanorama/sample.size.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.interactive.html
 
 <Version history>
+1.42 : Fixed scrollX to be always within (-width*0.5, width*0.5) for the looped image, 
+       so that users can more conveniently draw stuffs using this parameter. 
+       Examples:
+       ex1) width:100, scrollX:90 -> -10
+       ex2) width:100, scrollX:-60 -> 40
+
+       Now ddpanorama uses imagesLoaded script to catch the image load event. 
+       As the load event has some drawbacks(https://api.jquery.com/load-event/), 
+       I decided to adapt other method. eg. Prior to this version, applying 
+       ddpanorama after the image is fully loaded was not working well, but it now 
+       works
+
+       Added html element overlay example. Now you can see other elements positioned 
+       over canvas element. Other way of implementation might be drawing some texts on 
+       canvas and checking if the user clicks one of those texts’ bounding rectangles, 
+       but it would be definitely cumbersome/hard to predict the final result. 
+       Instead, I positioned already existing handy HTML elements on top of canvas, 
+       so that users can see/control the result beforehand.
+       (https://dl.dropboxusercontent.com/u/1791448/ddpanorama/sample.drawlabels.html)
 1.41 : Delayed resizing/attachment after the panorama image is completely 
        loaded
 1.40 : Now CSS is separated from codes. Note that to work as

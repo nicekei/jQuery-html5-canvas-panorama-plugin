@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+        <script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="imagesloaded.pkgd.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+	</head>
+	<body>
+		
+		<div id="container" style="position: relative;overflow:hidden">
+			<img id="panotarget" src="PanoSarek.jpg" />
+			<div id="linkcontainer" style="position:absolute;left:0px;top:0px;" >
+				<a href="http://google.com" style="position:absolute;left:100px;top:50px;"> hello1</a>
+				<a href="http://google.com" style="position:absolute;left:150px;top:200px;"> hello2</a>
+				<a href="http://google.com" style="position:absolute;left:250px;top:150px;"> hello3</a>
+				<a href="http://google.com" style="position:absolute;left:350px;top:330px;"> hello4</a>
+				<a href="http://google.com" style="position:absolute;left:470px;top:120px;"> hello5</a>
+				<a href="http://google.com" style="position:absolute;left:520px;top:210px;"> hello6</a>
+				<a href="http://google.com" style="position:absolute;left:600px;top:50px;"> hello7</a>
+				<a href="http://google.com" style="position:absolute;left:750px;top:200px;"> hello8</a>
+				<a href="http://google.com" style="position:absolute;left:850px;top:150px;"> hello9</a>
+				<a href="http://google.com" style="position:absolute;left:950px;top:330px;"> hello10</a>
+				<a href="http://google.com" style="position:absolute;left:1070px;top:120px;"> hello11</a>
+				<a href="http://google.com" style="position:absolute;left:1150px;top:200px;"> hello12</a>
+				<a href="http://google.com" style="position:absolute;left:1250px;top:150px;"> hello13</a>
+				<a href="http://google.com" style="position:absolute;left:1350px;top:330px;"> hello14</a>
+				<a href="http://google.com" style="position:absolute;left:1470px;top:120px;"> hello15</a>
+				<a href="http://google.com" style="position:absolute;left:1520px;top:210px;"> hello16</a>
+				<a href="http://google.com" style="position:absolute;left:1600px;top:50px;"> hello17</a>
+				<a href="http://google.com" style="position:absolute;left:1750px;top:200px;"> hello18</a>
+				<a href="http://google.com" style="position:absolute;left:1850px;top:150px;"> hello19</a>
+				<a href="http://google.com" style="position:absolute;left:1950px;top:330px;"> hello20</a>
+				<a href="http://google.com" style="position:absolute;left:2070px;top:120px;"> hello21</a>
+				<a href="http://google.com" style="position:absolute;left:2120px;top:210px;"> hello22</a>
+				<a href="http://google.com" style="position:absolute;left:2200px;top:50px;"> hello23</a>
+				<a href="http://google.com" style="position:absolute;left:2350px;top:200px;"> hello24</a>
+				<a href="http://google.com" style="position:absolute;left:2450px;top:150px;"> hello25</a>
+				<a href="http://google.com" style="position:absolute;left:2550px;top:330px;"> hello26</a>
+				<a href="http://google.com" style="position:absolute;left:2670px;top:120px;"> hello27</a>
+			</div>
+		</div>
+		<button onclick="init()">init ddpanorama</button>
+		<script>
+			var panorama = null;
+			function init()
+			{
+				if (panorama != null) return;
+				panorama=jQuery(function(){jQuery("#panotarget").ddpanorama({ratio:9/16})});
+				panorama.bind("ddinit", function(event){
+							//this is the tricky part. We need to make a duped one of the labels for the cycled image.
+							//note that we are placing html elements, so it doesn't automatically wrap up for the looped images
+							var src = $("#linkcontainer");
+							var linkcontainer2 = src.clone();
+							linkcontainer2.attr("id", "linkcontainer2");
+							src.after(linkcontainer2);
+							linkcontainer2.css("left", event.width);
+							console.log("ddinit");
+							});
+				panorama.bind("ddredraw", function(event){
+							  //do something here to handle redraw event
+							  //event.speed contains a speed (px/sec)
+							  //event.canvas contains a canvas element
+							  //event.loaded contains a boolean flag which indicates whether the image is loaded or not
+							  //(I'll add later more compelling examples later)
+							  
+							  var offsetX = event.scrollX;
+							  
+							  //its quite efficient because you are just scrolling one parent element, not all of the labels
+							  $("#linkcontainer").css("left", offsetX);
+							  if (offsetX < 0)
+							  {
+								  $("#linkcontainer2").css("left", offsetX+event.width);
+							  }
+							  else
+							  {
+							  	$("#linkcontainer2").css("left", offsetX-event.width);
+							  }
+							  });
+				  panorama.bind("ddresize", function(event){
+								jQuery("#container").width($(event.canvas).width());
+								jQuery("#container").height($(event.canvas).height());
+								});
+			}
+			//init()
+		</script>
+	</body>
+</html>

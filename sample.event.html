@@ -4,7 +4,8 @@
 		<link rel="stylesheet" href="ddpanorama.css" />
         <script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
 		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
-		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+		<script type="text/javascript" src="imagesloaded.pkgd.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.js"> </script>
 	</head>
 	<body>
 		<img src="PanoSarek.jpg" /><br />
@@ -29,12 +30,12 @@
 						 //This event is called when the panorama is initialized
 						 //event.canvas contains the canvas element
 						 panoramaCanvas=event.canvas;
-						 logEvent(event.type,["canvas"], event);
+						 logEvent(event.type,["canvas", "width"], event);
 						 })
 				   .bind("ddresize", function(event){
 						 //This event is called when the panorama size is updated
 						 //event.canvas contains the canvas element
-						 logEvent(event.type,["canvas"], event);
+						 logEvent(event.type,["canvas", "width"], event);
 						 })
 				   .bind("ddredraw", function(event){
 						 //This event is called when the panorama size is updated
@@ -42,32 +43,32 @@
 						 //event.scrollX contains the scroll position
 						 //event.speed contains the speed (px/sec)
 						 //event.loaded contains the boolean flag which indicates whether the image is loaded or not
-						 logEvent(event.type,["canvas","loaded","scrollX","speed"], event);
+						 logEvent(event.type,["canvas", "width","loaded","scrollX","speed"], event);
 						 
 						  })
 				   .bind("ddstartmove", function(event){
 						 //This event is called when the panorama size is updated
 						 //event.canvas contains the canvas element
 						 //event.scrollX contains the scroll position
-						 logEvent(event.type,["canvas", "scrollX"], event);
+						 logEvent(event.type,["canvas", "width", "scrollX"], event);
 						 })
 				   .bind("ddstopmove", function(event){
 						 //This event is called when the panorama size is updated
 						 //event.canvas contains the canvas element
 						 //event.scrollX contains the scroll position
-						 logEvent(event.type,["canvas", "scrollX"], event);
+						 logEvent(event.type,["canvas", "width", "scrollX"], event);
 						 })
 				   .bind("ddmousedown", function(event){
 						 //This event is called when the panorama size is updated
 						 //event.canvas contains the canvas element
 						 //event.scrollX contains the scroll position
-						 logEvent(event.type,["canvas", "scrollX"], event);
+						 logEvent(event.type,["canvas", "width", "scrollX"], event);
 						 })
 				   .bind("ddmouseup", function(event){
 						 //This event is called when the panorama size is updated
 						 //event.canvas contains the canvas element
 						 //event.scrollX contains the scroll position
-						 logEvent(event.type,["canvas", "scrollX"], event);
+						 logEvent(event.type,["canvas", "width", "scrollX"], event);
 						 })
 				   ;
 				   });
