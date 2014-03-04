@@ -41,6 +41,7 @@
 				<a href="http://google.com" style="position:absolute;left:2670px;top:120px;"> hello27</a>
 			</div>
 		</div>
+		<div id="output" />
 		<button onclick="init()">init ddpanorama</button>
 		<script>
 			var panorama = null;
@@ -65,7 +66,7 @@
 							  //event.loaded contains a boolean flag which indicates whether the image is loaded or not
 							  //(I'll add later more compelling examples later)
 							  
-							  var offsetX = event.scrollX;
+							  var offsetX = Math.floor(event.scrollX);
 							  
 							  //its quite efficient because you are just scrolling one parent element, not all of the labels
 							  $("#linkcontainer").css("left", offsetX);
@@ -77,6 +78,7 @@
 							  {
 							  	$("#linkcontainer2").css("left", offsetX-event.width);
 							  }
+							  $("#output").text(offsetX);
 							  });
 				  panorama.bind("ddresize", function(event){
 								jQuery("#container").width($(event.canvas).width());
