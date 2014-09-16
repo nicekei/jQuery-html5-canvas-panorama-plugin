@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="ddpanorama.css" />
+        <script type="text/javascript" src="jquery.1.7.1.min.js"> </script>
+		<script type="text/javascript" src="jquery.ba-outside-events.min.js"> </script>
+		<script type="text/javascript" src="imagesloaded.pkgd.min.js"> </script>
+		<script type="text/javascript" src="ddpanorama.min.js"> </script>
+	</head>
+	<body>
+		Double click to put a mark a mark <br />
+		<img src="PanoSarek.jpg" />
+		<img src="PanoSarek.jpg" id="test2" />
+		<script>
+			//see
+			jQuery(function(){
+                   
+                   jQuery("img").ddpanorama({ratio:9/16, minSpeed:5})
+                   
+                   .bind("ddinit", function(event)
+                         {
+                         console.log("ddinit");
+                         var ddpanoramaDrawInfo = {circleLocations : [], scrollX : 0};
+                         $(event.canvas).data("ddpanoramaDrawInfo", ddpanoramaDrawInfo);
+                         $(event.canvas).dblclick(function(clickEvent){
+                                                  var offset = $(this).offset();
+                                                  var relX = clickEvent.pageX - offset.left;
+                                                  var relY = clickEvent.pageY - offset.top;
+                                                  ddpanoramaDrawInfo.circleLocations.push({x : relX - ddpanoramaDrawInfo.scrollX, y : relY});
+                                               });
+                         
+                         })
+                   
+                   .bind("ddredraw", function(event){
+                         var ddpanoramaDrawInfo = $(event.canvas).data("ddpanoramaDrawInfo");
+                         ddpanoramaDrawInfo.scrollX = event.scrollX;
+                         var wrapOffset = event.width;
+                         if (event.scrollX > 0)
+                         {
+                            wrapOffset = -wrapOffset;
+                         }
+                         
+                         var canvas=event.canvas;
+                         var ctx=canvas.getContext("2d");
+                         for (var idx in ddpanoramaDrawInfo.circleLocations)
+                         {
+                             var circleLocation = ddpanoramaDrawInfo.circleLocations[idx];
+                             ctx.beginPath();
+                             ctx.arc(event.scrollX+circleLocation.x,circleLocation.y,10,0,2*Math.PI);
+                             ctx.stroke();
+                             ctx.beginPath();
+                             ctx.arc(wrapOffset + event.scrollX+circleLocation.x,circleLocation.y,10,0,2*Math.PI);
+                             ctx.stroke();
+                         
+                         }
+																		  
+                         ctx.beginPath();
+                         ctx.arc(canvas.width/2,canvas.height/2,50,0,2*Math.PI);
+                         
+                         ctx.stroke();
+                         });
+                   });
+		</script>
+	</body>
+</html>
