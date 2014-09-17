@@ -20,6 +20,7 @@ http://dl.dropbox.com/u/1791448/ddpanorama/sample.size.html
 http://dl.dropbox.com/u/1791448/ddpanorama/sample.interactive.html
 
 <Version history>
+1.43 : Fixed a bug firing ddredraw event first when minSpeed exists(!=0)
 1.42 : Fixed scrollX to be always within (-width*0.5, width*0.5) for the looped
        image, so that users can more conveniently draw stuffs using this 
        parameter. 

@@ -1,9 +1,9 @@
 /*
- * ddpanorama - jQuery plugin version 1.42
+ * ddpanorama - jQuery plugin version 1.43
  * Copyright (c) Tiny Studio (http://tinystudio.iptime.org/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Date: 2014/03/04 12:30:43 KST 
+ * Date: 2014/09/17 11:57:29 KST 
  */
 
 
@@ -590,10 +590,6 @@
 					}
 					
 						 
-					if (params.minSpeed != 0)
-					{
-						o.add();
-					}
 
                     
                     o.bindevent();
@@ -610,6 +606,11 @@
                         o.resize();
 						o.redraw();
 						o.loaded=true;
+                         if (params.minSpeed != 0)
+                         {
+                                         o.add();
+                         }
+                                         
 						
 						});
 				});
