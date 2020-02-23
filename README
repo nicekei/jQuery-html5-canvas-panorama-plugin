@@ -5,19 +5,19 @@ From June 11 2012 from Kei Kim(nicekei@gmail.com)
 Added a sample page users can directly view on the net
 
 Check following pages to see ddpanorama in action:
-
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.eventredraw2.html (NEW)
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.drawlabels.html (NEW)
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.event.html 
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.eventredraw.html 
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.dynamicsize.html 
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.dynamicinteractive.html 
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.pos.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.loop.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.basic.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.minspeed.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.size.html
-http://dl.dropbox.com/u/1791448/ddpanorama/sample.interactive.html
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.dynamicspeed.html
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.eventredraw2.html (NEW)
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.drawlabels.html (NEW)
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.event.html 
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.eventredraw.html 
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.dynamicsize.html 
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.dynamicinteractive.html 
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.pos.html
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.loop.html
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.basic.html
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.minspeed.html
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.size.html
+https://htmlpreview.github.io/?https://github.com/nicekei/jQuery-html5-canvas-panorama-plugin/blob/master/sample.interactive.html
 
 <Version history>
 1.43 : Fixed a bug firing ddredraw event first when minSpeed exists(!=0)
